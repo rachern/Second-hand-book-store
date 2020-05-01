@@ -17,7 +17,7 @@ const actions = {
             getBookType().then(res => {
                 const { data } = res.data
                 commit('SET_BOOKTYPES', data)
-                resolve()
+                resolve(data)
             }).catch(err => {
                 reject(err)
             })

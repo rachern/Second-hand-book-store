@@ -32,7 +32,7 @@ export default {
     },
     methods: {
         handleSelect(key) {
-            console.log(key)
+            this.$router.push({path: `/PersonalCenter/accountSettings/${key}`})
         }
     },
     watch: {

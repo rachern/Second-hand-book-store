@@ -93,15 +93,15 @@ export default {
                     this.errMsg = ''
                     this.$store.dispatch('user/register', this.registerForm)
                         .then(response => {
-                            if (response.data.msg === '用户名已存在') {
-                                this.errMsg = '用户名已存在'
-                            } else if (response.data.msg !== '注册成功') {
-                                this.$message.error(response.data.msg)
-                            } else {
+                            // if (response.data.msg === '用户名已存在') {
+                            //     this.errMsg = '用户名已存在'
+                            // } else if (response.data.msg !== '注册成功') {
+                            //     this.$message.error(response.data.msg)
+                            // } else {
                                 this.$message.success('注册成功')
                                 this.$refs['registerForm'].resetFields();
                                 this.$emit('login');
-                            }
+                            // }
                         }).catch(err => {
                             console.log(err)
                         })

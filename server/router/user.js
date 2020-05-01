@@ -1,11 +1,22 @@
 const express = require('express');
 const MD5 = require('crypto-js/md5')
 const jwt = require('jsonwebtoken')
+const mongoose = require('mongoose')
 // const boom = require('boom');
 
 const Result = require('../utils/Result');
 const { PWD_SALT, PRIVATE_KEY, JWT_EXPIRED } = require('../utils/constant');
-const { createUser, findUser } = require('../service/user')
+const { createUser, 
+        findUser, 
+        checkPassword, 
+        updatePassword, 
+        updateInformation,
+        getCollections,
+        getMyCartList,
+        updateCartList,
+        updateCollections } = require('../service/user')
+const { getMyCollectionBooks } = require('../service/book')
+const { decoded } = require('../utils')
 
 const router = express.Router();
 
@@ -33,18 +44,178 @@ router.post('/login', async (req, res) => {
     password = MD5(`${password}${PWD_SALT}`).toString()
 
     const user = await findUser({ username, password })
-    if (!user || user.length === 0) {
+    if (!user) {
         new Result('用户名或密码错误').fail(res)
     } else {
-        console.log(user)
-        const { email, introduction, phoneNumber, role, sex, url } = user
+        // console.log(user)
+        // const { email, introduction, phoneNumber, role, sex, url } = user
         const token = jwt.sign(
-            { username },
+            { _id: user._id  },
             PRIVATE_KEY,
             { expiresIn: JWT_EXPIRED }
         )
         // username, email, introduction, phoneNumber, roles, sex, url, 
         new Result({ token }, '登录成功').success(res)
+    }
+})
+
+// 获取用户信息
+router.get('/getInfo', async (req, res) => {
+    const decode = decoded(req)
+    if(decode && decode._id) {
+        const user = await findUser({ _id: decode._id })
+        // console.log(1,user)
+        if(user) {
+            // const { username, email, introduction, phoneNumber, roles, sex, url } = user
+            new Result(user, '用户信息查询成功').success(res)
+        } else {
+            new Result('用户信息查询失败').fail(res)
+        }
+    } else {
+        new Result('用户信息查询失败').fail(res)
+    }
+})
+
+//修改密码
+router.post('/changePassword', async (req, res) => {
+    let { originalPassword, newPassword } = req.body
+    const decode = decoded(req)
+    if(decode && decode._id) {
+        originalPassword = MD5(`${originalPassword}${PWD_SALT}`).toString()
+        const user = await checkPassword(decode._id, originalPassword)
+        if(user) {
+            newPassword = MD5(`${newPassword}${PWD_SALT}`).toString()
+            const result = await updatePassword(decode._id, newPassword)
+            if(result) {
+                new Result('密码修改成功').success(res)
+            } else {
+                new Result('密码修改失败').fail(res)
+            }
+        } else {
+            new Result('密码错误').fail(res)
+        }
+    }
+})
+
+// 修改用户信息
+router.post('/updateInformation', async (req, res) => {
+    const decode = decoded(req)
+    if(decode && decode._id) {
+        const result = await updateInformation(decode._id, req.body)
+        if(result) {
+            new Result('个人信息修改成功').success(res)
+        } else {
+            new Result('个人信息修改失败').fail(res)
+        }
+    }
+})
+
+// 获取用户最新收藏的4本书籍
+router.get('/getLatestFourCollections', async (req, res) => {
+    const decode = decoded(req)
+    if(decode && decode._id){
+        const col = await getCollections(decode._id)
+        let { collections } = col
+        if(collections.length > 4) {
+            collections = collections.slice(0, 4)
+        }
+        // console.log(collections)
+        let bookIds = []
+        collections.forEach(element => {
+            bookIds.push({_id: element})
+        })
+        // console.log(bookIds)
+        const latestCollections = await getMyCollectionBooks(bookIds)
+        // console.log(latestCollections)
+        if(latestCollections) {
+            new Result({latestCollections}, '获取成功').success(res)
+        } else {
+            new Result('获取失败').fail(res)
+        }
+    }
+})
+
+// 获取用户收藏的书籍
+router.get('/myCollectionBooks', async (req, res) => {
+    const decode = decoded(req)
+    if(decode && decode._id) {
+        // const a = await cartList(decode._id)
+        // console.log("a",a)
+        const col = await getCollections(decode._id)
+        let { collections } = col
+        const { limit, skip } = req.query
+        collections = collections.reverse().slice(skip, skip+limit)
+        let bookIds = []
+        collections.forEach(element => {
+            bookIds.push({_id: element})
+        })
+        const myCollectionBooks = await getMyCollectionBooks(bookIds)
+        if(myCollectionBooks) {
+            new Result(myCollectionBooks, '获取成功').success(res)
+        } else {
+            new Result('获取失败').fail(res)
+        }
+    }
+})
+
+// 获取用户收藏的书籍数量
+router.get('/getMyCollectionBooksCount', async (req, res) => {
+    const decode = decoded(req)
+    if(decode && decode._id) {
+        const col = await getCollections(decode._id)
+        let { collections } = col
+        new Result(collections.length, '获取成功').success(res)
+    }
+})
+
+// 获取用户的购物车列表
+router.get('/getMyCartList', async (req, res) => {
+    const decode = decoded(req)
+    if(decode && decode._id) {
+        const myCartList = await getMyCartList(decode._id)
+        if(myCartList) {
+            new Result(myCartList, '获取成功').success(res)
+        } else {
+            new Result('获取失败').fail(res)
+        }
+    }
+})
+
+// 更新购物车
+router.post('/updateCartList', async (req, res) => {
+    const decode = decoded(req)
+    if(decode && decode._id) {
+        const { cartList } = req.body
+        cartList.forEach(element => {
+            element.id = mongoose.Types.ObjectId(element.id)
+        })
+        const result = await updateCartList(decode._id, cartList)
+        if(result) {
+            new Result('更新成功').success(res)
+        } else {
+            new Result('更新失败').fail(res)
+        }
+    }
+})
+
+// 将选中的商品移入收藏夹
+router.post('/moveToCollection', async (req, res) => {
+    const decode = decoded(req)
+    if(decode && decode._id) {
+        const { bookIds } = req.body;
+        const col = await getCollections(decode._id);
+        let { collections } = col;
+        bookIds.forEach((bookId, index) => {
+            if(!collections.includes(bookId)) {
+                collections.push(mongoose.Types.ObjectId(bookId))
+            }
+        })
+        const result = await updateCollections(decode._id, collections)
+        if(result) {
+            new Result('移入收藏夹成功').success(res)
+        } else {
+            new Result('移入收藏夹失败').fail(res)
+        }
     }
 })
 

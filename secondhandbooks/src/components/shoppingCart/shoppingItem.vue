@@ -1,39 +1,75 @@
 <template>
     <div class="shopping-item">
         <div class="cell checkbox">
-            <el-checkbox v-model="checked"></el-checkbox>
+            <el-checkbox v-model="checked" @change="changeCheck"></el-checkbox>
         </div>
         <div class="cell goods">
             <div class="goods-item">
                 <div class="img">
-                    <img :src="shopping.url" :alt="shopping.title" :title="shopping.title"/>
+                    <img :src="book.url" :alt="book.title" :title="book.title"/>
                 </div>
-                <div class="title">{{shopping.title}}</div>
+                <div class="title">{{book.title}}</div>
             </div>
         </div>
-        <div class="cell price">￥65.60</div>
+        <div class="cell price">￥{{book.presentPrice.toFixed(2)}}</div>
         <div class="cell quantity">
-            <el-input-number v-model="num" @change="handleChange" :min="1" :max="10" size="mini"></el-input-number>
+            <el-input-number v-model="bookNumber" @change="handleChange" :min="1" :max="book.number" size="mini"></el-input-number>
         </div>
-        <div class="cell sum">￥65.60</div>
+        <div class="cell sum">￥{{(book.presentPrice * bookNumber).toFixed(2)}}</div>
         <div class="cell action">
-            <p>删除</p>
-            <p>移到收藏</p>
+            <p @click="deleteThis">删除</p>
+            <p @click="removeThis">移到收藏</p>
         </div>
     </div>
 </template>
 
 <script>
 export default {
+    props: ['book', 'bookNum','check'],
     data() {
         return {
-            num: 1,
-            shopping: {
-                url: require('../../assets/img/Computer_and_network/Language_and_programming/book1.jpg'),
-                title: 'Python大战机器学习：数据科学家的第一个小目标'
-            }
+            checked: false,
+            bookNumber: 0
         };
     },
+    methods: {
+        handleChange(value) {
+            this.$emit('changeNum', value)
+        },
+        changeCheck() {
+            this.$emit('changeCheck', this.checked)
+        },
+        deleteThis() {
+            this.$emit('deleteThis')
+        },
+        removeThis() {
+            this.$emit('removeThis')
+        }
+    },
+    mounted() {
+        this.bookNumber = this.bookNum
+        this.checked = this.check
+    },
+    watch: {
+        check(newValue) {
+            this.checked = newValue
+        }
+    }
+    // watch: {
+    //     bookNum(newValue) {
+    //         this.bookNumber = newValue
+    //     }
+    // },
+    // computed: {
+    //     book_num: {
+    //         get() {
+    //             return this.bookNum
+    //         },
+    //         set(val) {
+    //             console.log(val)
+    //         }
+    //     }
+    // }
 }
 </script>
 
@@ -73,13 +109,16 @@ export default {
         }
         .price{
             width: 160px;
+            color: #E2231A;
         }
         .quantity{
             width: 160px;
         }
         .sum{
+            font-size: 16px;
             width: 160px;
             font-weight: bold;
+            color: #E2231A;
         }
         .action{
             width: 160px;

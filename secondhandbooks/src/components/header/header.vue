@@ -23,6 +23,10 @@
                                 <i class="el-icon-arrow-down el-icon--right"></i>
                             </span>
                             <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item command="/PersonalCenter/myPublish">我的发布</el-dropdown-item>
+                                <el-dropdown-item command="/PersonalCenter/myCollection">我的收藏</el-dropdown-item>
+                                <el-dropdown-item command="/PersonalCenter/myAuction">我的竞拍</el-dropdown-item>
+                                <el-dropdown-item command="/PersonalCenter/myAskingBook">我的征书</el-dropdown-item>
                                 <el-dropdown-item command="logout">退出登录</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
@@ -69,7 +73,7 @@ export default {
         },
         handleCommand(command) {
             // this.$message('click on item ' + command);
-            if(command && command === "logout") {
+            if(command === "logout") {
                 this.$store.dispatch('user/logout').then(() => {
                     console.log(1)
                     if(this.$route.path !== '/') {
@@ -78,6 +82,8 @@ export default {
                         this.showUser = false
                     }
                 })
+            } else {
+                this.toView(command)
             }
         },
         toView(path) {

@@ -38,7 +38,10 @@ import {
   TableColumn,
   Image,
   Radio,
-  RadioGroup
+  RadioGroup,
+  Divider,
+  Select,
+  Option
 } from 'element-ui'
 import vRegion from 'v-region';
 import './permission'
@@ -94,6 +97,9 @@ Vue.use(TableColumn);
 Vue.use(Image);
 Vue.use(Radio);
 Vue.use(RadioGroup);
+Vue.use(Divider);
+Vue.use(Select);
+Vue.use(Option);
 
 new Vue({
   router,

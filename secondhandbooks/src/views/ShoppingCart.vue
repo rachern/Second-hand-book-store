@@ -16,7 +16,11 @@ export default {
         myHeader,
         contain,
         myFooter
-    }    
+    },
+    created() {
+        // console.log(1)
+        this.$store.dispatch('user/getMyCartList')
+    }
 }
 </script>
 

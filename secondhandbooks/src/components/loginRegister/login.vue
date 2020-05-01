@@ -68,14 +68,14 @@ export default {
                     this.errMsg = ""
                     this.$store.dispatch('user/login', this.loginForm)
                         .then(res => {
-                            if(res && res.msg === "用户名或密码错误") {
-                                this.errMsg = "用户名或密码错误"
-                            } else {
+                            // if(res && res.msg === "用户名或密码错误") {
+                            //     this.errMsg = "用户名或密码错误"
+                            // } else {
                                 if(this.redirect){
                                     this.$router.push({ path: this.redirect })
                                 }
                                 this.$router.push({ path: '/' })
-                            }
+                            // }
                         })
                         .catch(err => {
                             console.log(err)

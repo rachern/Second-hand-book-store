@@ -29,7 +29,7 @@ export default {
         .footer-inner{
             line-height: 50px;
             display: flex;
-            width: 90vw;
+            width: 90%;
             margin: 0 auto;
             justify-content: space-between;
             padding: 0 40px;

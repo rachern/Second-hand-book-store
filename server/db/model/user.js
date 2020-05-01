@@ -38,7 +38,11 @@ const userSchema = new mongoose.Schema({
         //管理员      admin
         //普通用户    user
         type:Array
-    }
+    },
+    collections:{//收藏
+        type:Array
+    },
+    cartList:[Object]//购物车
 })
 
 //将Schema对象转化为数据模型

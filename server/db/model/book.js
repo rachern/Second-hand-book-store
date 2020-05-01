@@ -68,10 +68,7 @@ const bookSchema = new mongoose.Schema({
     authorIntroduction:{//作者简介
         type:String
     },
-    catalog:{//目录
-        type:String
-    },
-    digest:{//文章节选
+    digest:{//目录
         type:String
     },
     issuer:{//发布者
@@ -81,8 +78,13 @@ const bookSchema = new mongoose.Schema({
     state:{//书籍状态
         //待审核  0
         //已发布  1
+        //已驳回  2
         type:Number,
-        enum:[0,1]
+        enum:[0,1,2]
+    },
+    rejectReason: {//驳回原因
+        type: String,
+        default: ''
     }
 })
 

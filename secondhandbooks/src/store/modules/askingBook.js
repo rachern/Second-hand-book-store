@@ -1,12 +1,19 @@
-import {getAskingBooks} from '@/api/askingBook'
+import {getAskingBooks, 
+        postAskingBook, 
+        getFirstThreeBooks, 
+        getMyAskingBooks} from '@/api/askingBook'
 
 const state = {
-    askingBooks: []
+    askingBooks: [],
+    myAskingBooks: []
 }
 
 const mutations = {
     SET_ASKINGBOOKS: (state, askingBooks) => {
         state.askingBooks = askingBooks
+    },
+    SET_MYASKINGBOOKS: (state, myAskingBooks) => {
+        state.myAskingBooks = myAskingBooks
     }
 }
 
@@ -23,6 +30,36 @@ const actions = {
             }).catch(err => {
                 // console.log(err)
                 reject(err)
+            })
+        })
+    },
+
+    //发布征书信息
+    postAskingBook({ commit }, askingBook) {
+        return new Promise((resolve, reject) => {
+            postAskingBook(askingBook).then(res => {
+                resolve(res.data)
+            })
+        })
+    },
+
+    //获取最近三条征书信息
+    getFirstThreeBooks({ commit }) {
+        return new Promise((resolve, reject) => {
+            getFirstThreeBooks().then(res => {
+                resolve(res.data.data)
+            })
+        })
+    },
+
+    //获取本人发布的征书信息
+    getMyAskingBooks({ commit }, obj) {
+        const { skip = 0, limit } = obj
+        return new Promise((resolve, reject) => {
+            getMyAskingBooks(limit, skip).then(res => {
+                const { data } = res.data
+                commit('SET_MYASKINGBOOKS', data)
+                resolve(res.data.data)
             })
         })
     }

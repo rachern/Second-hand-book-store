@@ -4,7 +4,7 @@ const Result = require('../utils/Result');
 const jwtAuth = require('../utils/jwt')
 
 module.exports = function(app){
-    // app.use(jwtAuth)
+    app.use(jwtAuth)
 
     app.all('*',(req,res,next)=>{
         res.header("Access-Control-Allow-Origin", "*");
@@ -12,6 +12,7 @@ module.exports = function(app){
         res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
         res.header("X-Powered-By",' 3.2.1')
         res.header("Content-Type", "application/json;charset=utf-8");
+        res.header("Access-Control-Max-Age", "0")
         next();
     })
 
@@ -21,7 +22,8 @@ module.exports = function(app){
     app.use('/book',require('./book'))
     app.use('/comment',require('./comment'))
     app.use('/askingBook',require('./askingBook'))
-    app.use('/upload',require('./upload'))
+    app.use('/file',require('./file'))
+    app.use('/address',require('./address'))
 
     /**
      * 集中处理404请求的中间件

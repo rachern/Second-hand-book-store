@@ -4,7 +4,7 @@
             <tab></tab>
             <div class="content">
                 <div class="post-asking-message">
-                    <el-button type="info">发布书籍求购信息</el-button>
+                    <el-button type="info" @click="postMessage">发布书籍求购信息</el-button>
                 </div>
                 <router-view></router-view>
             </div>
@@ -18,6 +18,11 @@ import tab from '@/components/tab/tab'
 export default {
     components:{
         tab
+    },
+    methods: {
+        postMessage() {
+            this.$router.push({path: '/AskingWall/postMessage'})
+        }
     }
 }
 </script>

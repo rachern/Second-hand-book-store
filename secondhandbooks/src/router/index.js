@@ -97,12 +97,16 @@ const routes = [
       {
         //我的发布
         path: 'myPublish',
-        meta: {title: '我的发布'}
+        name: 'myPublish',
+        component: () => import('../components/personalCenter/myPublish'),
+        meta: {title: '我的发布', name: 'myPublish'}
       },
       {
         //我的收藏
         path: 'myCollection',
-        meta: {title: '我的收藏'}
+        name: 'myCollection',
+        component: () => import('../components/personalCenter/myCollection'),
+        meta: {title: '我的收藏', name: 'myCollection'}
       },
       {
         //我的竞拍
@@ -112,7 +116,9 @@ const routes = [
       {
         //我的征书
         path: 'myAskingBook',
-        meta: {title: '我的征书'}
+        name: 'myAskingBook',
+        component: () => import('../components/personalCenter/myAskingBook'),
+        meta: {title: '我的征书', name: 'myAskingBook'}
       },
       {
         //账户设置
@@ -171,9 +177,55 @@ const routes = [
   },
   {
     //后台管理
-    path: '/Admin',
-    name: 'Admin',
-    component: () => import('../views/Admin')
+    path: '/ManagementEnd',
+    name: 'ManagementEnd',
+    component: () => import('../views/ManagementEnd'),
+    meta: {title: '管理端'},
+    redirect: '/ManagementEnd/carouselMapManagement',
+    children: [
+      {
+        // 轮播图管理
+        path: 'carouselMapManagement',
+        name: 'carouselMapManagement',
+        component: () => import('../components/managementEnd/carouselMapManagement'),
+        meta: {title: '轮播图管理'}
+      },
+      {
+        // 添加书籍分类
+        path: 'bookClassificationManagement/add',
+        name: 'addBookClassificationManagement',
+        component: () => import('../components/managementEnd/addBookClassificationManagement'),
+        meta: {title: '添加书籍分类'}
+      },
+      {
+        // 修改书籍分类
+        path: 'bookClassificationManagement/update',
+        name: 'updateBookClassificationManagement',
+        component: () => import('../components/managementEnd/updateBookClassificationManagement'),
+        meta: {title: '修改书籍分类'}
+      },
+      {
+        // 删除书籍分类
+        path: 'bookClassificationManagement/delete',
+        name: 'deleteBookClassificationManagement',
+        component: () => import('../components/managementEnd/deleteBookClassificationManagement'),
+        meta: {title: '删除书籍分类'}
+      },
+      {
+        // 上架书籍审核
+        path: 'bookReview/post',
+        name: 'postBookReview',
+        component: () => import('../components/managementEnd/postBookReview/postBookReviewList'),
+        meta: {title: '上架书籍审核'}
+      },
+      {
+        // 拍卖书籍审核
+        path: 'bookReview/auction',
+        name: 'auctionBookReview',
+        component: () => import('../components/managementEnd/auctionBookReview/auctionBookReviewList'),
+        meta: {title: '拍卖书籍审核'}
+      }
+    ]
   }
 ]
 

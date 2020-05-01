@@ -111,17 +111,18 @@
                 <el-card class="box-card">
                     <div slot="header" class="clearfix">
                         <span>我的发布</span>
-                        <el-button style="float: right; padding: 3px 20px" type="text">更多 ></el-button>
+                        <el-button style="float: right; padding: 3px 20px" type="text" @click="myPublish">更多 ></el-button>
                     </div>
-                    <div class="nothing" v-if="!hasOrders">
+                    <div class="nothing" v-if="latestBooks.length === 0">
                         <i class="iconfont icon-ganga"></i>
                         您没有发布任何书籍o！
                     </div>
                     <el-image
-                        v-for="i in 4" :key="i"
+                        v-for="(book,i) in latestBooks" :key="i"
                         style="width: 100px; height: 100px"
-                        :src="url"
+                        :src="book.url"
                         fit="contain"
+                        :title="book.title"
                         v-else></el-image>
                 </el-card>
             </div>
@@ -130,16 +131,17 @@
                 <el-card class="box-card">
                     <div slot="header" class="clearfix">
                         <span>我的收藏</span>
-                        <el-button style="float: right; padding: 3px 20px" type="text">更多 ></el-button>
+                        <el-button style="float: right; padding: 3px 20px" type="text" @click="myCollection">更多 ></el-button>
                     </div>
-                    <div class="nothing" v-if="!hasOrders">
+                    <div class="nothing" v-if="latestCollections.length === 0">
                         <i class="iconfont icon-ganga"></i>
                         您还没有收藏的书籍o！
                     </div>
                     <el-image
-                        v-for="i in 4" :key="i"
+                        v-for="(collection,i) in latestCollections" :key="i"
                         style="width: 100px; height: 100px"
-                        :src="url"
+                        :src="collection.url"
+                        :title="collection.title"
                         fit="contain"
                         v-else></el-image>
                 </el-card>
@@ -168,18 +170,16 @@
                 <el-card class="box-card">
                     <div slot="header" class="clearfix">
                         <span>我的征书</span>
-                        <el-button style="float: right; padding: 3px 20px" type="text">更多 ></el-button>
+                        <el-button style="float: right; padding: 3px 20px" type="text" @click="myAskingBook">更多 ></el-button>
                     </div>
-                    <div class="nothing" v-if="!hasOrders">
+                    <div class="nothing" v-if="latestAsking.length === 0">
                         <i class="iconfont icon-ganga"></i>
                         您还没有发布想要的书籍o！
                     </div>
-                    <el-image
-                        v-for="i in 4" :key="i"
-                        style="width: 100px; height: 100px"
-                        :src="url"
-                        fit="contain"
-                        v-else></el-image>
+                    <div class="myAskingBook_box" v-for="(ask, i) in latestAsking" :key="i">
+                        <span :title="ask.title">{{ask.title}}</span>
+                        <hr>
+                    </div>
                 </el-card>
             </div>
         </div>
@@ -199,7 +199,10 @@ export default {
                 title:"数据库与算法"},
             ],
             url: require('../../../assets/img/Computer_and_network/Database/book1.jpg'),
-            hasOrders: true
+            hasOrders: true,
+            latestAsking: [],
+            latestBooks: [],
+            latestCollections: []
         }
     },
     methods: {
@@ -211,12 +214,32 @@ export default {
         },
         order(type) {
             this.$router.push({ path: `/PersonalCenter/order/${type}` })
+        },
+        myAskingBook() {
+            this.$router.push({ path: `/PersonalCenter/myAskingBook` })
+        },
+        myPublish() {
+            this.$router.push({ path: `/PersonalCenter/myPublish` })
+        },
+        myCollection() {
+            this.$router.push({ path: `/PersonalCenter/myCollection` })
         }
+    },
+    created() {
+        this.$store.dispatch('askingBook/getFirstThreeBooks').then(res => {
+            this.latestAsking = res.latestAsking
+        })
+        this.$store.dispatch('book/getLatestFourBooks').then(res => {
+            this.latestBooks = res.latestBooks
+        })
+        this.$store.dispatch('user/getLatestFourCollections').then(res => {
+            this.latestCollections = res.latestCollections
+        })
     }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss"> 
     .el-table .cell{
         white-space: nowrap;
     }
@@ -235,7 +258,7 @@ export default {
             width: 54vw;
             min-width: 710px;
             .myShoppingCart{
-                margin-bottom: 10px;
+                margin-bottom: 20px;
             }
             .myOrder{
                 .order-icon{
@@ -295,6 +318,16 @@ export default {
                     color: rgb(184, 184, 184);
                     vertical-align: middle;
                     padding-right: 20px;
+                }
+            }
+            .myAskingBook .myAskingBook_box{
+                span{
+                    white-space: nowrap;
+                }
+                hr{
+                    background-color: rgb(210,210,210);
+                    height: 1px;
+                    border: none;
                 }
             }
         }

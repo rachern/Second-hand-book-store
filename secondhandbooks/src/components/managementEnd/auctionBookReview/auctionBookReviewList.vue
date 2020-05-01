@@ -1,5 +1,5 @@
 <template>
-    <div class="admin"></div>
+    <div class="auction-book-review"></div>
 </template>
 
 <script>

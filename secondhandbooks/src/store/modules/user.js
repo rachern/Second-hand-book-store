@@ -1,4 +1,14 @@
-import { login, register, getInfo } from '@/api/user'
+import { login, 
+         register, 
+         getInfo, 
+         changePassword, 
+         updateInformation, 
+         getLatestFourCollections,
+         getMyCollections,
+         getMyCartList,
+         updateCartList,
+         moveToCollection,
+         moveToCollection2 } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const state = {
@@ -9,7 +19,9 @@ const state = {
     roles: [],
     sex: '',
     avatar: '',
-    username: ''
+    username: '',
+    myCollectionBooks: [],
+    myCartList: {}
 }
 
 const mutations = {
@@ -36,6 +48,12 @@ const mutations = {
     },
     SET_USERNAME: (state, username) => {
         state.username = username
+    },
+    SET_MYCOLLECTIONBOOKS: (state, myCollectionBooks) =>  {
+        state.myCollectionBooks = myCollectionBooks
+    },
+    SET_MYCARTLIST: (state, myCartList) => {
+        state.myCartList = myCartList
     }
 }
 
@@ -46,9 +64,9 @@ const actions = {
         return new Promise((resolve, reject) => {
             login({ username: username.trim(), password: password.trim() }).then(response => {
                 // console.log("1",response)
-                if(response.data.msg && response.data.msg === '用户名或密码错误'){
-                    resolve(response.data)
-                }
+                // if(response.data.msg && response.data.msg === '用户名或密码错误'){
+                //     resolve(response.data)
+                // }
                 const { data } = response.data
                 commit('SET_TOKEN', data.token)
                 setToken(data.token)
@@ -59,11 +77,13 @@ const actions = {
         })
     },
 
-    //根据token获取用户信息
+    // 根据token获取用户信息
     getInfo({ commit }) {
         return new Promise((resolve, reject) => {
             getInfo().then(response => {
+                // console.log(1)
                 const { data } = response.data
+                // console.log(data)
                 if(!data) {
                     reject('验证失败，请重新登录')
                 }
@@ -82,6 +102,16 @@ const actions = {
         })
     },
 
+    // 重置token
+    resetToken({ commit }) {
+        return new Promise(resolve => {
+            commit('SET_TOKEN', '')
+            commit('SET_ROLES', [])
+            removeToken()
+            resolve()
+        })
+    },
+
     // 注册
     register({ commit }, userInfo) {
         const { username, password, phoneNumber } = userInfo;
@@ -96,6 +126,30 @@ const actions = {
         })
     },
 
+    // 修改密码
+    changePassword({ commit }, passwords) {
+        const { originalPassword, newPassword } = passwords
+        return new Promise((resolve, reject) => {
+            changePassword({ originalPassword: originalPassword.trim(), newPassword: newPassword.trim() })
+                .then(response => {
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+        })
+    },
+
+    // 修改个人信息
+    updateInformation({ commit }, information) {
+        return new Promise((resolve, reject) => {
+            updateInformation(information).then(response => {
+                resolve(response)
+            }).catch(error => {
+                reject(error)
+            })
+        })
+    },
+
     // 登出
     logout({ commit }) {
         return new Promise((resolve, reject) => {
@@ -103,12 +157,63 @@ const actions = {
             commit('SET_EMAIL', '')
             commit('SET_INTRODUCTION', '')
             commit('SET_PHONENUMBER', '')
-            commit('SET_ROLES', '')
+            commit('SET_ROLES', [])
             commit('SET_SEX', '')
             commit('SET_AVATAR', '')
             commit('SET_USERNAME', '')
             removeToken()
             resolve()
+        })
+    },
+
+    // 获取最新的4个收藏
+    getLatestFourCollections({ commit }) {
+        return new Promise((resolve, reject) => {
+            getLatestFourCollections().then(res => {
+                resolve(res.data.data)
+            })
+        })
+    },
+
+    // 获取用户收藏的书籍
+    getMyCollections({ commit }, obj) {
+        const { skip = 0, limit } = obj
+        return new Promise((resolve, reject) =>{
+            getMyCollections(limit, skip).then(res => {
+                const { data } = res.data
+                // console.log(data.a)
+                commit('SET_MYCOLLECTIONBOOKS', data)
+                resolve(res.data.data)
+            })
+        })
+    },
+
+    // 获取用户的购物车列表
+    getMyCartList({ commit }) {
+        return new Promise((resolve, reject) => {
+            getMyCartList().then(res => {
+                const { data } = res.data
+                commit('SET_MYCARTLIST', data[0])
+                resolve(res.data.data[0])
+            })
+        })
+    },
+
+    // 更新购物车
+    updateCartList({ commit }, cartList) {
+        return new Promise((resolve, reject) => {
+            updateCartList(cartList).then(res => {
+                resolve(res)
+            })
+        })
+    },
+
+    // 将当前商品移入收藏夹
+    moveToCollection({ commit }, bookIds) {
+        return new Promise((resolve, reject) => {
+            moveToCollection(bookIds).then(res => {
+                resolve(res)
+            })
         })
     }
 }

@@ -1,14 +1,18 @@
 <template>
     <div class="personalCenter_address">
         <div class="address_title"><h4>收货地址</h4></div>
-        <el-button type="primary" round size="mini">新增收货地址</el-button>
-        <span class="addrss_tip">您已创建2 个收货地址，最多可创建20个</span>
-        <address-list></address-list>
-        <edit-address v-if="isEditAddress"></edit-address>
+        <el-button type="primary" round size="mini" @click="addAddress">新增收货地址</el-button>
+        <span class="addrss_tip">您已创建{{addressCount}} 个收货地址，最多可创建20个</span>
+        <address-list @changeAddress="changeAddress"></address-list>
+        <edit-address v-if="isEditAddress" 
+                      @close="close" 
+                      :request="request"
+                      :willChangeAddressId="willChangeAddressId"></edit-address>
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import addressList from './personalCenter_addresslist'
 import editAddress from './personalCenter_editAddress'
 
@@ -19,8 +23,46 @@ export default {
     },
     data() {
         return {
-            isEditAddress: false
+            isEditAddress: false,
+            request: '',
+            addressCount: 0,
+            willChangeAddressId: ''
         }
+    },
+    watch: {
+        addressList(newValue) {
+            this.addressCount = newValue.length
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'addressList'
+        ])
+    },
+    methods: {
+        addAddress() {
+            if(this.addressCount >= 20) {
+                this.$message({
+                    message: '最多只能创建20个地址',
+                    type: 'warning'
+                })
+            } else {
+                this.isEditAddress = true
+                this.request = 'addAddress'
+            }
+        },
+        changeAddress(id) {
+            this.isEditAddress = true
+            this.request = 'changeAddress'
+            this.willChangeAddressId = id
+        },
+        close() {
+            this.isEditAddress = false
+            this.$store.dispatch('address/getAddress')
+        }
+    },
+    created() {
+        this.$store.dispatch('address/getAddress')
     }
 }
 </script>
