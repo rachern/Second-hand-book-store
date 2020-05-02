@@ -8,7 +8,7 @@ import { login,
          getMyCartList,
          updateCartList,
          moveToCollection,
-         moveToCollection2 } from '@/api/user'
+         getUsers } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const state = {
@@ -21,7 +21,8 @@ const state = {
     avatar: '',
     username: '',
     myCollectionBooks: [],
-    myCartList: {}
+    myCartList: {},
+    userList: []
 }
 
 const mutations = {
@@ -54,6 +55,9 @@ const mutations = {
     },
     SET_MYCARTLIST: (state, myCartList) => {
         state.myCartList = myCartList
+    },
+    SET_USERLIST: (state, userList) => {
+        state.userList = userList
     }
 }
 
@@ -213,6 +217,18 @@ const actions = {
         return new Promise((resolve, reject) => {
             moveToCollection(bookIds).then(res => {
                 resolve(res)
+            })
+        })
+    },
+
+    // 获取用户列表
+    getUsers({ commit }, obj) {
+        const { skip = 0, limit } = obj
+        return new Promise((resolve, reject) => {
+            getUsers(limit, skip).then(res => {
+                const { data } = res.data
+                commit('SET_USERLIST', data)
+                resolve(res.data.data)
             })
         })
     }

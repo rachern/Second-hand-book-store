@@ -219,11 +219,39 @@ const routes = [
         meta: {title: '上架书籍审核'}
       },
       {
+        // 书籍审核
+        path: 'postBookReview/:id',
+        name: 'postBookReviewById',
+        component: () => import('../components/managementEnd/postBookReview/postBookReviewById'),
+        meta: {title: '书籍审核'}
+      },
+      {
         // 拍卖书籍审核
         path: 'bookReview/auction',
         name: 'auctionBookReview',
         component: () => import('../components/managementEnd/auctionBookReview/auctionBookReviewList'),
         meta: {title: '拍卖书籍审核'}
+      },
+      {
+        // 拍卖审核
+        path: 'auctionBookReview/:id',
+        name: 'auctionBookReviewById',
+        component: () => import('../components/managementEnd/auctionBookReview/auctionBookReviewById'),
+        meta: {title: '拍卖审核'}
+      },
+      {
+        // 用户管理
+        path: 'userManagement',
+        name: 'userManagement',
+        component: () => import('../components/managementEnd/userManagement/userManagement'),
+        meta: {title: '用户管理'}
+      },
+      {
+        // 消息推送
+        path: 'messagePush',
+        name: 'messagePush',
+        component: () => import('../components/managementEnd/messagePush'),
+        meta: {title: '消息推送'}
       }
     ]
   }

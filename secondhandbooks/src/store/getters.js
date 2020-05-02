@@ -9,6 +9,7 @@ const getters = {
     username: state => state.user.username,
     myCollectionBooks: state => state.user.myCollectionBooks,
     myCartList: state => state.user.myCartList,
+    userList: state => state.user.userList,
     carousels: state => state.carousel.carousels,
     booktypes: state => state.booktype.booktypes,
     homeBooks: state => state.book.homeBooks,

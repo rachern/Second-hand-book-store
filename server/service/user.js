@@ -69,6 +69,11 @@ function getMyCartList(id) {
 function updateCartList(id, cartList) {
     return User.findOneAndUpdate({_id: id}, {cartList})
 }
+
+// 获取用户列表
+function getUsers(limit, skip) {
+    return User.find({},{password:0}).skip(parseInt(skip)).limit(parseInt(limit))
+}
  
 module.exports = {
     createUser,
@@ -80,5 +85,6 @@ module.exports = {
     // cartList,
     getMyCartList,
     updateCartList,
-    updateCollections
+    updateCollections,
+    getUsers
 }

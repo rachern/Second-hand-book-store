@@ -14,7 +14,8 @@ const { createUser,
         getCollections,
         getMyCartList,
         updateCartList,
-        updateCollections } = require('../service/user')
+        updateCollections,
+        getUsers } = require('../service/user')
 const { getMyCollectionBooks } = require('../service/book')
 const { decoded } = require('../utils')
 
@@ -76,7 +77,7 @@ router.get('/getInfo', async (req, res) => {
     }
 })
 
-//修改密码
+// 修改密码
 router.post('/changePassword', async (req, res) => {
     let { originalPassword, newPassword } = req.body
     const decode = decoded(req)
@@ -216,6 +217,18 @@ router.post('/moveToCollection', async (req, res) => {
         } else {
             new Result('移入收藏夹失败').fail(res)
         }
+    }
+})
+
+// 获取用户列表
+router.get('/getUsers', async (req, res) => {
+    const { limit, skip } = req.query;
+    const userList = await getUsers(limit, skip)
+    // console.log(userList)
+    if(userList) {
+        new Result(userList, '用户列表获取成功').success(res)
+    } else {
+        new Result('用户列表获取失败').fail(res)
     }
 })
 

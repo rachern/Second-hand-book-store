@@ -94,3 +94,12 @@ export function moveToCollection(bookIds) {
         data: { bookIds }
     })
 }
+
+// 获取用户列表
+export function getUsers(limit, skip) {
+    return request({
+        url: '/user/getUsers',
+        method: 'get',
+        params: { limit, skip }
+    })
+}

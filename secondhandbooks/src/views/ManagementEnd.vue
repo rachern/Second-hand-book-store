@@ -49,21 +49,11 @@
                         <span slot="title">拍卖书籍审核</span>
                     </el-menu-item>
                 </el-submenu>
-                <el-submenu index="4">
-                    <template slot="title">
-                        <i class="el-icon-user-solid"></i>
-                        <span>用户管理</span>
-                    </template>
-                    <el-menu-item index="4-1">
-                        <i class="iconfont icon-shanchuyonghu"></i>
-                        <span slot="title">删除用户</span>
-                    </el-menu-item>
-                    <el-menu-item index="4-2">
-                        <i class="el-icon-key"></i>
-                        <span slot="title">权限管理</span>
-                    </el-menu-item>
-                </el-submenu>
-                <el-menu-item index="5">
+                <el-menu-item index="/userManagement">
+                    <i class="el-icon-user-solid"></i>
+                    <span slot="title">用户管理</span>
+                </el-menu-item>
+                <el-menu-item index="/messagePush">
                     <i class="el-icon-chat-line-square"></i>
                     <span slot="title">消息推送</span>
                 </el-menu-item>
@@ -117,8 +107,13 @@ export default {
     watch: {
         $route: {
             handler: function(route) {
-                // console.log(route)
-                this.activeIndex = route.path.replace(/\/ManagementEnd/,'')
+                if(route.path.match(/^\/ManagementEnd\/postBookReview/)) {
+                    this.activeIndex = '/bookReview/post'
+                } else if(route.path.match(/^\/ManagementEnd\/auctionBookReview/)) {
+                    this.activeIndex = '/bookReview/auction'
+                } else {
+                    this.activeIndex = route.path.replace(/\/ManagementEnd/,'')
+                }
             },
             immediate: true
         }

@@ -88,10 +88,13 @@ export default {
 <style lang="scss">
     .avatar-uploader .el-upload {
         border: 1px dashed #d9d9d9;
-        border-radius: 6px;
+        border-radius: 50%;
         cursor: pointer;
         position: relative;
         overflow: hidden;
+        .avatar {
+            object-fit: cover;
+        }
     }
     .avatar-uploader .el-upload:hover {
         border-color: #409EFF;

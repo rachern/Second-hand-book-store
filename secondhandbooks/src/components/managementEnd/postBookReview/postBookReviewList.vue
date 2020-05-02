@@ -3,26 +3,22 @@
         <div class="title" id="add-classification-title"><h4>待审核上架的书籍列表</h4></div>
         <div class="msg">
             <el-collapse v-model="activeName" accordion>
-                <el-collapse-item v-for="(askingBook,index) in askingBooks" :key="index"
-                    :title="askingBook.title" 
+                <el-collapse-item v-for="(book,index) in myPublishBooks" :key="index"
+                    :title="book.title" 
                     :name="index">
-                    <ul class="parameter-list">
-                        <li :title="askingBook.press">出版社：{{askingBook.press}}</li>
-                        <li :title="askingBook.publishingTime">出版时间：{{askingBook.publishingTime}}</li>
-                        <li :title="askingBook.author">作者：{{askingBook.author}}</li>
-                        <li :title="askingBook.askingPerson.username">
-                            发布人：{{askingBook.askingPerson.username}}
-                            <el-button type="danger" icon="el-icon-chat-dot-round" size="mini">联系买家</el-button>
+                    <ul class="parameter-list" @click="bookReview(book._id)">
+                        <li :title="book.press">出版社：{{book.publisher}}</li>
+                        <li :title="book.publishingTime">出版时间：{{book.publishingTime}}</li>
+                        <li :title="book.author">作者：{{book.author}}</li>
+                        <li :title="book.state === 0 ? '待审核' : (book.state === 1 ? '已发布' : '已驳回')">
+                            发布状态：{{book.state === 0 ? '待审核' : (book.state === 1 ? '已发布' : '已驳回')}}
                         </li>
-                        <div class="pic-wrap">
-                            图片：
-                            <div class="pic" v-for="(pic,index) in askingBook.pictures" :key="index">
-                                <img :src="pic.url"/>
-                            </div>
-                        </div>
-                        <div class="createdTime" :title="askingBook.createdTime">
-                            发布时间：{{askingBook.createdTime}}
-                        </div>
+                        <li :title="book.ISBN">ISBN：{{book.ISBN}}</li>
+                        <li :title="book.edition">版次：{{book.edition}}</li>
+                        <li :title="book.code">商品编码：{{book.code}}</li>
+                        <li :title="book.pack">包装：{{book.pack}}</li>
+                        <li :title="book.size">开本：{{book.size}}</li>
+                        <li :title="book.paper">用纸：{{book.paper}}</li>
                     </ul>
                 </el-collapse-item>
             </el-collapse>
@@ -36,22 +32,27 @@ import { mapGetters } from 'vuex'
 import pagination from '@/components/classification/classification_pagination'
 
 export default {
-    components:{
+    components: {
         pagination
+    },
+    data() {
+        return {
+            pageSize: 15,
+            activeName: ''
+        }
+    },
+    methods: {
+        bookReview(id) {
+            this.$router.push({path: `/ManagementEnd/postBookReview/${id}`})
+        }
     },
     computed: {
         ...mapGetters([
-            'askingBooks'
+            "myPublishBooks"
         ])
     },
     created() {
-        this.$store.dispatch('askingBook/getAskingBooks',{ limit: this.pageSize })
-    },
-    data(){
-        return {
-            activeName: '',
-            pageSize: 15
-        }
+        this.$store.dispatch('book/getMyPublishBooks', {limit: this.pageSize})
     }
 }
 </script>
@@ -79,6 +80,7 @@ export default {
             .parameter-list{
                 padding: 20px 0 15px;
                 overflow: hidden;
+                cursor: pointer;
                 li{
                     text-align: left;
                     line-height: 22px;
