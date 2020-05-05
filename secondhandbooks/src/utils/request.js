@@ -26,7 +26,7 @@ service.interceptors.response.use(
     response => {
         // return response
         const res = response.data
-        // console.log(res)
+        console.log(1,res)
         if(res.code !== 0) {
             // res.code === 50008 || res.code === 50012 || res.code === 50014
             if(res.code === -2) {
@@ -52,7 +52,9 @@ service.interceptors.response.use(
         }
     },
     error => {
+        console.log(2, error)
         const { msg } = error.response.data
+        // console.log(2, error)
         Message({
             message: msg || '请求失败',
             type: 'error',

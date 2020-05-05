@@ -57,6 +57,10 @@
                     <i class="el-icon-chat-line-square"></i>
                     <span slot="title">消息推送</span>
                 </el-menu-item>
+                <el-menu-item index="/orderManagement">
+                    <i class="el-icon-s-order"></i>
+                    <span slot="title">订单管理</span>
+                </el-menu-item>
             </el-menu>
         </div>
         <div class="right">

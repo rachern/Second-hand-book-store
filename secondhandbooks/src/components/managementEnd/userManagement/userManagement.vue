@@ -59,8 +59,9 @@
                 <el-table-column
                     fixed="right"
                     label="操作"
-                    width="120">
+                    width="180">
                 <template slot-scope="scope">
+                    <el-button type="text" size="small">重置密码</el-button>
                     <el-button type="text" size="small">删除</el-button>
                     <el-button @click="handleClick(scope.row)" type="text" size="small">权限编辑</el-button>
                 </template>

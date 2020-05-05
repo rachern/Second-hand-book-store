@@ -252,6 +252,13 @@ const routes = [
         name: 'messagePush',
         component: () => import('../components/managementEnd/messagePush'),
         meta: {title: '消息推送'}
+      },
+      {
+        // 订单管理
+        path: 'orderManagement',
+        name: 'orderManagement',
+        component: () => import('../components/managementEnd/orderManagement'),
+        meta: {title: '订单管理'}
       }
     ]
   }
