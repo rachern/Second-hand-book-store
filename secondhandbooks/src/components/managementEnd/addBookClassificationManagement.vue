@@ -4,7 +4,7 @@
         <div class="editClassification">
             <div class="form-wrap">
                 <el-form ref="addClassificationForm" :model="addClassificationForm" label-width="100px" :rules="addClassificationRules">
-                    <el-form-item label="一级分类">
+                    <el-form-item label="一级分类" prop="level_1">
                         <el-select
                             v-model="addClassificationForm.level_1"
                             filterable
@@ -19,7 +19,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="二级分类">
+                    <el-form-item label="二级分类" prop="level_2">
                         <el-input v-model="addClassificationForm.level_2"
                                   placeholder="请输入二级分类"></el-input>
                     </el-form-item>
@@ -34,30 +34,70 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     data() {
+        let validateLevel1 = (rule,value,callback) => {
+            if(!value || value.length === 0) {
+                callback(new Error('一级分类不能为空'))
+            } else {
+                callback()
+            }
+        }
+
+        let validateLevel2 = (rule,value,callback) => {
+            if(!value || value.length === 0) {
+                callback(new Error('二级分类不能为空'))
+            } else {
+                callback()
+            }
+        }
+
         return {
-            addClassificationForm: {},
-            addClassificationRules: {},
-            level_1s: [{
-                    value: 'HTML',
-                    label: 'HTML'
-                }, {
-                    value: 'CSS',
-                    label: 'CSS'
-                }, {
-                    value: 'JavaScript',
-                    label: 'JavaScript'
-            }]
+            addClassificationForm: {
+                level_1: '',
+                level_2: ''
+            },
+            addClassificationRules: {
+                level_1: [{ validator: validateLevel1, trigger: 'blur' }],
+                level_2: [{ validator: validateLevel2, trigger: 'blur' }]
+            },
+            level_1s: []
         }
     },
     methods: {
         onSubmit() {
-
+            this.$refs['addClassificationForm'].validate(valid => {
+                if(valid) {
+                    this.$store.dispatch('booktype/addBookType', this.addClassificationForm).then(res => {
+                        this.$refs['addClassificationForm'].resetFields();
+                        this.$store.dispatch('booktype/getBookType')
+                        this.$message.success('添加成功');
+                    })
+                } else {
+                    return false
+                }
+            })
         },
         cancel() {
-
+            this.$refs['addClassificationForm'].resetFields();
         }
+    },
+    watch: {
+        booktypes(newValue) {
+            newValue.forEach(booktype => {
+                this.level_1s.push({value:booktype.level_1,label:booktype.level_1})
+            })
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'booktypes'
+        ])
+    },
+    created() {
+        this.$store.dispatch('booktype/getBookType')
     }
 }
 </script>

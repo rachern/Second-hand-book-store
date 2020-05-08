@@ -3,10 +3,10 @@
         <div class="title" id="add-classification-title"><h4>删除书籍分类</h4></div>
         <div class="editClassification">
             <div class="form-wrap">
-                <el-form ref="addClassificationForm" :model="addClassificationForm" label-width="100px" :rules="addClassificationRules">
+                <el-form ref="deleteClassificationForm" :model="deleteClassificationForm" label-width="100px" :rules="deleteClassificationRules">
                     <el-form-item label="一级分类">
                         <el-select
-                            v-model="addClassificationForm.level_1"
+                            v-model="deleteClassificationForm.level_1"
                             filterable
                             default-first-option
                             placeholder="请选择要删除的一级分类">
@@ -20,7 +20,7 @@
                     </el-form-item>
                     <el-form-item label="二级分类">
                         <el-select
-                            v-model="addClassificationForm.level_2"
+                            v-model="deleteClassificationForm.level_2"
                             filterable
                             default-first-option
                             placeholder="请选择要删除的二级分类">
@@ -43,31 +43,19 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     data() {
         return {
-            addClassificationForm: {},
-            addClassificationRules: {},
-            level_1s: [{
-                    value: 'HTML',
-                    label: 'HTML'
-                }, {
-                    value: 'CSS',
-                    label: 'CSS'
-                }, {
-                    value: 'JavaScript',
-                    label: 'JavaScript'
-            }],
-            level_2s: [{
-                    value: 'HTML',
-                    label: 'HTML'
-                }, {
-                    value: 'CSS',
-                    label: 'CSS'
-                }, {
-                    value: 'JavaScript',
-                    label: 'JavaScript'
-            }]
+            deleteClassificationForm: {
+                level_1: '',
+                level_2: '',
+            },
+            deleteClassificationRules: {},
+            level_1s: [],
+            level_2s: [],
+            classification: []
         }
     },
     methods: {
@@ -77,6 +65,34 @@ export default {
         cancel() {
 
         }
+    },
+    watch: {
+        booktypes(newValue) {
+            this.classification = newValue;
+            newValue.forEach(booktype => {
+                this.level_1s.push({value:booktype.level_1,label:booktype.level_1})
+            })
+        },
+        'deleteClassificationForm.level_1': {
+            handler: function(level1) {
+                this.classification.forEach(booktype => {
+                    if(booktype.level_1 === level1) {
+                        booktype.level_2.forEach(level2 => {
+                            this.level_2s.push({label:level2.level_2, value:level2.level_2})
+                        })
+                        return
+                    }
+                })
+            }
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'booktypes'
+        ])
+    },
+    created() {
+        this.$store.dispatch('booktype/getBookType')
     }
 }
 </script>

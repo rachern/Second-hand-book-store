@@ -1,4 +1,4 @@
-import { getBookType } from '@/api/booktype'
+import { getBookType, addBookType } from '@/api/booktype'
 
 const state = {
     booktypes: []
@@ -18,6 +18,17 @@ const actions = {
                 const { data } = res.data
                 commit('SET_BOOKTYPES', data)
                 resolve(data)
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    },
+
+    // 添加书籍分类
+    addBookType({ commit }, bookType) {
+        return new Promise((resolve, reject) => {
+            addBookType(bookType).then(res => {
+                resolve(res)
             }).catch(err => {
                 reject(err)
             })

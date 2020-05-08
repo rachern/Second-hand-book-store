@@ -1,7 +1,7 @@
 const express = require('express')
 
 const Result = require('../utils/Result')
-const { getBookType } = require('../service/booktype')
+const { getBookType, findBookType, addBookType } = require('../service/booktype')
 
 const router = express.Router()
 
@@ -26,6 +26,21 @@ router.get('/getBookType', async (req, res) => {
         }
     })
     new Result(new_booktypes, '查询成功').success(res)
+})
+
+// 添加书籍分类
+router.post('/addBookType', async (req, res) => {
+    const { bookType } = req.body
+    // console.log(bookType)
+    const hasBookType = await findBookType(bookType)
+    if(!hasBookType) {
+        const result = await addBookType(bookType)
+        if(result) {
+            new Result('添加成功').success(res)
+        } else {
+            new Result('添加失败').fail(res)
+        }
+    }
 })
 
 module.exports = router
