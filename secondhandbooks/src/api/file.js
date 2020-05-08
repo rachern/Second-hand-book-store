@@ -35,3 +35,12 @@ export function postFeaturePic(featurePicData) {
         data: featurePicData
     })
 }
+
+// 上传轮播图
+export function postCarousel(carouselData) {
+    return request({
+        url: '/file/postCarousel',
+        method: 'post',
+        data: carouselData
+    })
+}

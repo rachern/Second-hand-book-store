@@ -1,4 +1,4 @@
-import { postAvatar, postAskingBook, postCoverPic, postFeaturePic } from '@/api/file'
+import { postAvatar, postAskingBook, postCoverPic, postFeaturePic, postCarousel } from '@/api/file'
 
 const state = {
 
@@ -40,6 +40,15 @@ const actions = {
     postFeaturePic({ commit }, featurePicData) {
         return new Promise((resolve, reject) => {
             postFeaturePic(featurePicData).then(response => {
+                resolve(response.data.data)
+            })
+        })
+    },
+
+    // 上传轮播图片
+    postCarousel({ commit }, carouselData) {
+        return new Promise((resolve, reject) => {
+            postCarousel(carouselData).then(response => {
                 resolve(response.data.data)
             })
         })

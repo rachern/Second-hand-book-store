@@ -1,10 +1,10 @@
 <template>
-    <div class="carousel-map-management clearfix">
-        <div class="carousel" v-for="(carousel,index) in carousels" :key="index">
+    <div class="carousel-map-management clearfix" v-if="loadSurvey">
+        <div class="carousel" v-for="(carousel,index) in carouselsList" :key="index">
             <div class="img-wrap">
-                <img :src="carousel.url">
+                <img :src="carousel.url" :alt="carousel.name" :title="carousel.name">
             </div>
-            <span class="delete">
+            <span class="delete" @click="deleteCarousl(index)">
                 <i class="el-icon-error"></i>
             </span>
         </div>
@@ -29,27 +29,24 @@
         <el-dialog :visible.sync="dialogVisible">
             <img width="100%" :src="dialogImageUrl" alt="">
         </el-dialog>
+        <div class="btn">
+            <el-button type="primary" @click="confirm">确定</el-button>
+        </div>
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     data() {
         return {
-            carousels: [
-                {url:require('../../assets/img/carousel/carousel1.jpg')},
-                {url:require('../../assets/img/carousel/carousel2.jpg')},
-                {url:require('../../assets/img/carousel/carousel3.jpg')},
-                {url:require('../../assets/img/carousel/carousel4.jpg')},
-                {url:require('../../assets/img/carousel/carousel5.jpg')},
-                {url:require('../../assets/img/carousel/carousel6.jpg')},
-                {url:require('../../assets/img/carousel/carousel7.jpg')},
-                {url:require('../../assets/img/carousel/carousel8.jpg')}
-            ],
+            carouselsList: [],
             fileList: [],
             picList: [],
             dialogImageUrl: '',
             dialogVisible: false,
+            loadSurvey:true
         }
     },
     methods: {
@@ -59,7 +56,44 @@ export default {
         handlePictureCardPreview(file) {
             this.dialogImageUrl = file.url;
             this.dialogVisible = true;
+        },
+        deleteCarousl(index) {
+            this.$store.dispatch('carousel/deleteCarousel', this.carouselsList[index]._id)
+            this.carouselsList.splice(index, 1);
+        },
+        async confirm() {
+            if(this.picList) {
+                let formData = new FormData()
+                this.picList.forEach(pic => {
+                    formData.append('carousel', pic)
+                })
+                const { picUrls } = await this.$store.dispatch('file/postCarousel', formData)
+                // this.postAskingForm.pictures = picUrls
+                // console.log(picUrls)
+                this.$store.dispatch('carousel/addCarousels', picUrls).then(async res => {
+                    // location.reload()
+                    await this.$store.dispatch('carousel/getAllCarousel')
+                    //使页面重新渲染
+                    this.loadSurvey = false
+                    this.$nextTick(() => {
+                        this.loadSurvey = true
+                    })
+                })
+            }
         }
+    },
+    watch: {
+        allCarousels(newValue) {
+            this.carouselsList = newValue;
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'allCarousels'
+        ])
+    },
+    created() {
+        this.$store.dispatch('carousel/getAllCarousel')
     }
 }
 </script>
@@ -115,6 +149,9 @@ export default {
                     }
                 }
             }
+        }
+        .btn{
+            margin-top: 20px;
         }
     }
 </style>

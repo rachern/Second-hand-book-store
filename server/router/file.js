@@ -118,4 +118,38 @@ router.post('/postFeaturePic', upload.array('featurePic'), async (req, res) => {
         })
     }
 })
+
+// 上传轮播图
+router.post('/postCarousel', upload.array('carousel'), async (req, res) => {
+    if(req.files) {
+        let picUrls = []
+        for(let file of req.files) {
+            // 图片名称，避免重复
+            let filename = new Date().getTime() + parseInt(Math.random()*9999) + '.' + file.originalname
+            // 上传图片保存路径
+            let des_file = path.join(__dirname, '../public/imgs/carousel/') + filename
+
+            picUrls.push(new Promise((resolve, reject) => {
+                fs.readFile(file.path, (err, data) => {
+                    if(err) {
+                        new Result('轮播图上传失败').fail(res)
+                        return
+                    }
+                    fs.writeFile(des_file, data, err => {
+                        if(err) {
+                            new Result('轮播图上传失败').fail(res)
+                            return
+                        }
+                        resolve({url: `http://localhost:3000/imgs/carousel/${filename}`,
+                                name: filename})
+                    })
+                })
+            }))
+        }
+        Promise.all(picUrls).then(picUrls => {
+            new Result({picUrls}, '轮播图上传成功').success(res)
+        })
+    }
+})
+
 module.exports = router

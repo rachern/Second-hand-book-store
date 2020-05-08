@@ -11,6 +11,7 @@ const getters = {
     myCartList: state => state.user.myCartList,
     userList: state => state.user.userList,
     carousels: state => state.carousel.carousels,
+    allCarousels: state => state.carousel.allCarousels,
     booktypes: state => state.booktype.booktypes,
     homeBooks: state => state.book.homeBooks,
     classificationBooks: state => state.book.classificationBooks,
