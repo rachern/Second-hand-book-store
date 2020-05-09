@@ -1,4 +1,4 @@
-import { getBookType, addBookType } from '@/api/booktype'
+import { getBookType, addBookType, deleteBookType, updateBookType } from '@/api/booktype'
 
 const state = {
     booktypes: []
@@ -28,7 +28,29 @@ const actions = {
     addBookType({ commit }, bookType) {
         return new Promise((resolve, reject) => {
             addBookType(bookType).then(res => {
+                resolve(res.data.msg)
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    },
+
+    // 删除书籍分类
+    deleteBookType({ commit }, bookType) {
+        return new Promise((resolve, reject) => {
+            deleteBookType(bookType).then(res => {
                 resolve(res)
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    },
+
+    // 修改书籍分类
+    updateBookType({ commit }, obj) {
+        return new Promise((resolve, reject) => {
+            updateBookType(obj).then(res => {
+                resolve(res.data.msg)
             }).catch(err => {
                 reject(err)
             })

@@ -3,10 +3,10 @@
         <div class="title" id="add-classification-title"><h4>修改书籍分类</h4></div>
         <div class="editClassification">
             <div class="form-wrap">
-                <el-form ref="addClassificationForm" :model="addClassificationForm" label-width="100px" :rules="addClassificationRules" :inline="true">
-                    <el-form-item label="一级分类">
+                <el-form ref="updateClassificationForm" :model="updateClassificationForm" label-width="100px" :rules="updateClassificationRules" :inline="true">
+                    <el-form-item label="一级分类" prop="level_1">
                         <el-select
-                            v-model="addClassificationForm.level_1"
+                            v-model="updateClassificationForm.level_1"
                             filterable
                             default-first-option
                             placeholder="请选择要修改的一级分类">
@@ -18,9 +18,9 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="二级分类">
+                    <el-form-item label="二级分类" prop="level_2">
                         <el-select
-                            v-model="addClassificationForm.level_2"
+                            v-model="updateClassificationForm.level_2"
                             filterable
                             default-first-option
                             placeholder="请选择要修改的二级分类">
@@ -33,13 +33,13 @@
                         </el-select>
                     </el-form-item>
                 </el-form>
-                <el-form ref="addClassificationForm" :model="addClassificationForm" label-width="100px" :rules="addClassificationRules" :inline="true">
-                    <el-form-item label="一级分类">
-                        <el-input v-model="addClassificationForm.level_2"
+                <el-form ref="updateClassificationForm2" :model="updateClassificationForm2" label-width="100px" :rules="updateClassificationRules2" :inline="true">
+                    <el-form-item label="一级分类" prop="level_1">
+                        <el-input v-model="updateClassificationForm2.level_1"
                                   placeholder="修改后的一级分类名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="二级分类">
-                        <el-input v-model="addClassificationForm.level_2"
+                    <el-form-item label="二级分类" prop="level_2">
+                        <el-input v-model="updateClassificationForm2.level_2"
                                   placeholder="修改后的二级分类名称"></el-input>
                     </el-form-item>
                 </el-form>
@@ -55,40 +55,116 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     data() {
+        let validateFormLevel1 = (rule,value,callback) => {
+            if(!value || value.length === 0) {
+                callback(new Error('一级分类不能为空'))
+            } else {
+                callback()
+            }
+        }
+
+        let validateForm2Level1 = (rule,value,callback) => {
+            if(!value || value.length === 0) {
+                callback(new Error('一级分类不能为空'))
+            } else {
+                callback()
+            }
+        }
+
+        // 如果选择了二级分类，那么二级分类必填
+        let validateForm2Level2 = (rule,value,callback) => {
+            if(this.updateClassificationForm.level_2) {
+                if(!value || value.length === 0) {
+                    callback(new Error('二级分类不能为空'))
+                } else {
+                    callback()
+                }
+            } else {
+                callback()
+            }
+        }
+
         return {
-            addClassificationForm: {},
-            addClassificationRules: {},
-            level_1s: [{
-                    value: 'HTML',
-                    label: 'HTML'
-                }, {
-                    value: 'CSS',
-                    label: 'CSS'
-                }, {
-                    value: 'JavaScript',
-                    label: 'JavaScript'
-            }],
-            level_2s: [{
-                    value: 'HTML',
-                    label: 'HTML'
-                }, {
-                    value: 'CSS',
-                    label: 'CSS'
-                }, {
-                    value: 'JavaScript',
-                    label: 'JavaScript'
-            }]
+            updateClassificationForm: {
+                level_1: '',
+                level_2: ''
+            },
+            updateClassificationRules: {
+                level_1: [{ validator: validateFormLevel1, trigger: 'blur' }]
+            },
+            updateClassificationForm2: {
+                level_1: '',
+                level_2: ''
+            },
+            updateClassificationRules2: {
+                level_1: [{ validator: validateForm2Level1, trigger: 'blur' }],
+                level_2: [{ validator: validateForm2Level2, trigger: 'blur' }]
+            },
+            level_1s: [],
+            level_2s: []
         }
     },
     methods: {
         onSubmit() {
-
+            this.$refs['updateClassificationForm'].validate(valid => {
+                if(valid) {
+                    this.$refs['updateClassificationForm2'].validate(valid => {
+                        if(valid) {
+                            // const _this = this
+                            this.$store.dispatch('booktype/updateBookType', { updateClassificationForm:this.updateClassificationForm, updateClassificationForm2:this.updateClassificationForm2 }).then(res => {
+                                this.$refs['updateClassificationForm'].resetFields();
+                                this.$refs['updateClassificationForm2'].resetFields();
+                                this.level_1s = [];
+                                this.level_2s = [];
+                                this.$store.dispatch('booktype/getBookType')
+                                this.$message.success(res);
+                            })
+                        } else {
+                            return false
+                        }
+                    })
+                } else {
+                    return false
+                }
+            })
         },
         cancel() {
-
+            this.$refs['updateClassificationForm'].resetFields()
+            this.$refs['updateClassificationForm2'].resetFields()
+            this.level_2s = [];
         }
+    },
+    watch: {
+        booktypes(newValue) {
+            this.classification = newValue;
+            newValue.forEach(booktype => {
+                this.level_1s.push({value:booktype.level_1,label:booktype.level_1})
+            })
+        },
+        'updateClassificationForm.level_1': {
+            handler: function(level1) {
+                this.classification.forEach(booktype => {
+                    if(booktype.level_1 === level1) {
+                        booktype.level_2.forEach(level2 => {
+                            this.level_2s.push({label:level2.level_2, value:level2.level_2})
+                        })
+                        return
+                    }
+                })
+            }
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'booktypes'
+        ])
+    },
+    created() {
+        this.$store.dispatch('booktype/getBookType')
     }
 }
 </script>

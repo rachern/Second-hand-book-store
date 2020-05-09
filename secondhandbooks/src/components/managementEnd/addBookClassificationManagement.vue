@@ -72,8 +72,9 @@ export default {
                 if(valid) {
                     this.$store.dispatch('booktype/addBookType', this.addClassificationForm).then(res => {
                         this.$refs['addClassificationForm'].resetFields();
+                        this.level_1s = []
                         this.$store.dispatch('booktype/getBookType')
-                        this.$message.success('添加成功');
+                        this.$message.success(res);
                     })
                 } else {
                     return false

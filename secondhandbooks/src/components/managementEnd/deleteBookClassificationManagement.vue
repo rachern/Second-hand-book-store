@@ -4,7 +4,7 @@
         <div class="editClassification">
             <div class="form-wrap">
                 <el-form ref="deleteClassificationForm" :model="deleteClassificationForm" label-width="100px" :rules="deleteClassificationRules">
-                    <el-form-item label="一级分类">
+                    <el-form-item label="一级分类" prop="level_1">
                         <el-select
                             v-model="deleteClassificationForm.level_1"
                             filterable
@@ -18,7 +18,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="二级分类">
+                    <el-form-item label="二级分类" prop="level_2">
                         <el-select
                             v-model="deleteClassificationForm.level_2"
                             filterable
@@ -47,12 +47,22 @@ import { mapGetters } from 'vuex'
 
 export default {
     data() {
+        let validateLevel1 = (rule,value,callback) => {
+            if(!value || value.length === 0) {
+                callback(new Error('一级分类不能为空'))
+            } else {
+                callback()
+            }
+        }
+
         return {
             deleteClassificationForm: {
                 level_1: '',
                 level_2: '',
             },
-            deleteClassificationRules: {},
+            deleteClassificationRules: {
+                level_1: [{validator: validateLevel1, trigger: 'blur' }]
+            },
             level_1s: [],
             level_2s: [],
             classification: []
@@ -60,10 +70,23 @@ export default {
     },
     methods: {
         onSubmit() {
-
+            this.$refs['deleteClassificationForm'].validate(valid => {
+                if(valid) {
+                    this.$store.dispatch('booktype/deleteBookType', this.deleteClassificationForm).then(res => {
+                        this.$refs['deleteClassificationForm'].resetFields();
+                        this.level_1s = [];
+                        this.level_2s = [];
+                        this.$store.dispatch('booktype/getBookType')
+                        this.$message.success('删除成功');
+                    })
+                } else {
+                    return false
+                }
+            })
         },
         cancel() {
-
+            this.$refs['deleteClassificationForm'].resetFields()
+            this.level_2s = [];
         }
     },
     watch: {
