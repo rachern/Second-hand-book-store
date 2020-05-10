@@ -80,6 +80,26 @@ function getMyCollectionBooks(bookIds) {
     return Book.find({$or: bookIds}).sort({_id: -1})
 }
 
+// 获取待审核上架的书籍数量
+function getPostBookReviewCount() {
+    return Book.find({state: 0}).countDocuments()
+}
+
+// 获取待审核上架的书籍
+function getPostBookReviewList(limit, skip) {
+    return Book.find({state: 0}).sort({_id: -1}).skip(parseInt(skip)).limit(parseInt(limit))
+}
+
+// 通过待上架书籍审核
+function passPostBook(id) {
+    return Book.findOneAndUpdate({_id: id}, {state: 1})
+}
+
+// 驳回待上架书籍审核
+function rejectPostBook(id, rejectReason) {
+    return Book.findOneAndUpdate({_id: id}, {state: 2, rejectReason})
+}
+
 module.exports = {
     getFirstFiveBooks,
     getClassificationBooks,
@@ -89,5 +109,9 @@ module.exports = {
     getLatestFourBooks,
     getMyPublishBooks,
     getMyPublishBooksCount,
-    getMyCollectionBooks
+    getMyCollectionBooks,
+    getPostBookReviewCount,
+    getPostBookReviewList,
+    passPostBook,
+    rejectPostBook
 }

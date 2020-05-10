@@ -17,6 +17,7 @@ const getters = {
     classificationBooks: state => state.book.classificationBooks,
     bookDetail: state => state.book.bookDetail,
     myPublishBooks: state => state.book.myPublishBooks,
+    postBookReviewList: state => state.book.postBookReviewList,
     comments: state => state.comment.comments,
     askingBooks: state => state.askingBook.askingBooks,
     myAskingBooks: state => state.askingBook.myAskingBooks,

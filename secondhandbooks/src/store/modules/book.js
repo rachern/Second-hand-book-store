@@ -3,13 +3,17 @@ import { getHomeBooks,
          getBookDetail,
          postBook,
          getLatestFourBooks,
-         getMyPublishBooks} from '@/api/book'
+         getMyPublishBooks,
+         getPostBookReviewList,
+         passPostBook,
+         rejectPostBook} from '@/api/book'
 
 const state = {
     homeBooks: null,
     classificationBooks: [],
     bookDetail: null,
-    myPublishBooks: []
+    myPublishBooks: [],
+    postBookReviewList: []
 }
 
 const mutations = {
@@ -24,6 +28,9 @@ const mutations = {
     },
     SET_MYPUBLISHBOOKS: (state, myPublishBooks) => {
         state.myPublishBooks = myPublishBooks
+    },
+    SET_POSTBOOKREVIEWLIST: (state, postBookReviewList) => {
+        state.postBookReviewList = postBookReviewList
     }
 }
 
@@ -100,6 +107,36 @@ const actions = {
                 const { data } = res.data
                 commit('SET_MYPUBLISHBOOKS', data)
                 resolve(res.data.data)
+            })
+        })
+    },
+
+    // 获取待审核上架的书籍
+    getPostBookReviewList({ commit }, obj) {
+        const { skip = 0, limit } = obj
+        return new Promise((resolve, reject) => {
+            getPostBookReviewList(limit, skip).then(res => {
+                const { data } = res.data
+                commit('SET_POSTBOOKREVIEWLIST', data)
+                resolve(res.data.data)
+            })
+        })
+    },
+
+    // 审核待上架书籍通过
+    passPostBook({ commit }, id) {
+        return new Promise((resolve, reject) => {
+            passPostBook(id).then(res => {
+                resolve(res)
+            })
+        })
+    },
+
+    // 驳回待上架书籍
+    rejectPostBook({ commit }, obj) {
+        return new Promise((resolve, reject) => {
+            rejectPostBook(obj).then(res => {
+                resolve(res)
             })
         })
     }

@@ -15,7 +15,7 @@
 <script>
 import { getAskingBookCount, getMyAskingBooksCount } from '@/api/askingBook'
 import { getCommentCount } from '@/api/comment'
-import { getClassificationBooksCount, getMyPublishBooksCount } from '@/api/book'
+import { getClassificationBooksCount, getMyPublishBooksCount, getPostBookReviewCount } from '@/api/book'
 import { getMyCollectionBooksCount } from '@/api/user'
 
 export default {
@@ -62,6 +62,11 @@ export default {
                         const { data } = res.data
                         this.count = data
                     })
+                } else if(name === 'postBookReview') {
+                    getPostBookReviewCount().then(res => {
+                        const { data } =res.data
+                        this.count = data
+                    })
                 }
                 else if(name === 'order') {
                     
@@ -90,7 +95,10 @@ export default {
             } else if(name === 'myCollection') {
                 this.$store.dispatch('user/getMyCollections', { limit: this.pageSize, skip: (val-1)*this.pageSize })
                 document.querySelector('#my-collection-books-title').scrollIntoView()
-            } 
+            } else if(name === 'postBookReview') {
+                this.$store.dispatch('book/getPostBookReviewList', {limit: this.pageSize, skip: (val-1)*this.pageSize })
+                document.querySelector('#post-book-review-list-title').scrollIntoView()
+            }
             else {
                 this.$store.dispatch('book/getClassificationBooks', { id, limit: this.pageSize, skip: (val-1)*this.pageSize })
             }

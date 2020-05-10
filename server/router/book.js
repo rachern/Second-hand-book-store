@@ -8,7 +8,11 @@ const { getFirstFiveBooks,
         postBook,
         getLatestFourBooks,
         getMyPublishBooks,
-        getMyPublishBooksCount } = require('../service/book')
+        getMyPublishBooksCount,
+        getPostBookReviewList,
+        getPostBookReviewCount,
+        passPostBook,
+        rejectPostBook } = require('../service/book')
 const { decoded } = require('../utils')
 
 const router = express.Router()
@@ -101,6 +105,49 @@ router.get('/getMyPublishBooksCount', async (req, res) => {
         } else {
             new Result('获取失败').fail(res)
         }
+    }
+})
+
+// 获取待审核上架的书籍
+router.get('/getPostBookReviewList', async (req, res) => {
+    const { limit, skip } = req.query
+    const postBookReviewList = await getPostBookReviewList(limit, skip)
+    if(postBookReviewList) {
+        new Result(postBookReviewList, '获取成功').success(res)
+    } else {
+        new Result('获取失败').fail(res)
+    }
+})
+
+// 获取待审核上架的书籍数量
+router.get('/getPostBookReviewCount', async (req, res) => {
+    const postBookReviewCount = await getPostBookReviewCount()
+    if(postBookReviewCount) {
+        new Result(postBookReviewCount, '获取成功').success(res)
+    } else {
+        new Result('获取失败').fail(res)
+    }
+})
+
+// 审核待上架书籍通过
+router.post('/passPostBook', async (req, res) => {
+    const { id } = req.body
+    const result = await passPostBook(id)
+    if(result) {
+        new Result('提交成功').success(res)
+    } else {
+        new Result('提交失败').fail(res)
+    }
+})
+
+// 驳回待上架书籍
+router.post('/rejectPostBook', async (req, res) => {
+    const { id, rejectReason } = req.body
+    const result = await rejectPostBook(id, rejectReason)
+    if(result) {
+        new Result('提交成功').success(res)
+    } else {
+        new Result('提交失败').fail(res)
     }
 })
 

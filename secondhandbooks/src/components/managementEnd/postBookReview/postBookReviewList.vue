@@ -1,9 +1,9 @@
 <template>
     <div class="post-book-review-list">
-        <div class="title" id="add-classification-title"><h4>待审核上架的书籍列表</h4></div>
+        <div class="title" id="post-book-review-list-title"><h4>待审核上架的书籍列表</h4></div>
         <div class="msg">
             <el-collapse v-model="activeName" accordion>
-                <el-collapse-item v-for="(book,index) in myPublishBooks" :key="index"
+                <el-collapse-item v-for="(book,index) in postBookReviewList" :key="index"
                     :title="book.title" 
                     :name="index">
                     <ul class="parameter-list" @click="bookReview(book._id)">
@@ -48,11 +48,11 @@ export default {
     },
     computed: {
         ...mapGetters([
-            "myPublishBooks"
+            "postBookReviewList"
         ])
     },
     created() {
-        this.$store.dispatch('book/getMyPublishBooks', {limit: this.pageSize})
+        this.$store.dispatch('book/getPostBookReviewList', {limit: this.pageSize})
     }
 }
 </script>

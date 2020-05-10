@@ -57,7 +57,7 @@ export function getLatestFourBooks() {
 export function getMyPublishBooks(limit, skip) {
     return request({
         url: '/book/getMyPublishBooks',
-        methos: 'get',
+        method: 'get',
         params: { limit, skip }
     })
 }
@@ -66,6 +66,41 @@ export function getMyPublishBooks(limit, skip) {
 export function getMyPublishBooksCount() {
     return request({
         url: '/book/getMyPublishBooksCount',
-        methods: 'get'
+        method: 'get'
+    })
+}
+
+// 获取待审核上架的书籍数量
+export function getPostBookReviewCount() {
+    return request({
+        url: '/book/getPostBookReviewCount',
+        method: 'get'
+    })
+}
+
+// 获取待审核上架的书籍
+export function getPostBookReviewList(limit, skip) {
+    return request({
+        url: '/book/getPostBookReviewList',
+        method: 'get',
+        params: { limit, skip }
+    })
+}
+
+// 审核待上架书籍通过
+export function passPostBook(id) {
+    return request({
+        url: '/book/passPostBook',
+        method: 'post',
+        data: { id }
+    })
+}
+
+// 驳回待上架书籍
+export function rejectPostBook(obj) {
+    return request({
+        url: '/book/rejectPostBook',
+        method: 'post',
+        data: obj
     })
 }

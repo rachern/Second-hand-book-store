@@ -216,7 +216,7 @@ const routes = [
         path: 'bookReview/post',
         name: 'postBookReview',
         component: () => import('../components/managementEnd/postBookReview/postBookReviewList'),
-        meta: {title: '上架书籍审核'}
+        meta: {title: '上架书籍审核', name: 'postBookReview'}
       },
       {
         // 书籍审核
