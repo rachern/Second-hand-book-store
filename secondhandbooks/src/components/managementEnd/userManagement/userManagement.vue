@@ -61,9 +61,9 @@
                     label="操作"
                     width="180">
                 <template slot-scope="scope">
-                    <el-button type="text" size="small">重置密码</el-button>
-                    <el-button type="text" size="small">删除</el-button>
-                    <el-button @click="handleClick(scope.row)" type="text" size="small">权限编辑</el-button>
+                    <el-button type="text" size="small" @click="resetPassword(scope.row)">重置密码</el-button>
+                    <el-button type="text" size="small" @click="removeUser(scope.row)">删除</el-button>
+                    <el-button type="text" size="small" @click="editRoles(scope.row)">修改权限</el-button>
                 </template>
                 </el-table-column>
             </el-table>
@@ -74,6 +74,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { MessageBox } from 'element-ui' 
 import pagination from '@/components/classification/classification_pagination'
 
 export default {
@@ -82,46 +83,42 @@ export default {
     },
     data() {
         return {
-            tableData: [{
-                id: '12987122',
-                name: '好滋好味鸡蛋仔',
-                category: '江浙小吃、小吃零食',
-                desc: '荷兰优质淡奶，奶香浓而不腻',
-                address: '上海市普陀区真北路',
-                shop: '王小虎夫妻店',
-                shopId: '10333'
-            }, {
-                id: '12987123',
-                name: '好滋好味鸡蛋仔',
-                category: '江浙小吃、小吃零食',
-                desc: '荷兰优质淡奶，奶香浓而不腻',
-                address: '上海市普陀区真北路',
-                shop: '王小虎夫妻店',
-                shopId: '10333'
-            }, {
-                id: '12987125',
-                name: '好滋好味鸡蛋仔',
-                category: '江浙小吃、小吃零食',
-                desc: '荷兰优质淡奶，奶香浓而不腻',
-                address: '上海市普陀区真北路',
-                shop: '王小虎夫妻店',
-                shopId: '10333'
-            }, {
-                id: '12987126',
-                name: '好滋好味鸡蛋仔',
-                category: '江浙小吃、小吃零食',
-                desc: '荷兰优质淡奶，奶香浓而不腻',
-                address: '上海市普陀区真北路',
-                shop: '王小虎夫妻店',
-                shopId: '10333'
-            }],
             pageSize: 15,
             userDatas: []
         }
     },
     methods: {
-        handleClick(row) {
-            console.log(row);
+        resetPassword(row) {
+            MessageBox.confirm(`此操作将重置用户${row.username}的密码`, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.$store.dispatch('user/resetPassword', row._id).then(res => {
+                    this.$message({
+                        type: 'success',
+                        message: '重置密码成功'
+                    });
+                })
+            })
+        },
+        removeUser(row) {
+            MessageBox.confirm(`此操作将永久删除用户${row.username}`, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.$store.dispatch('user/removeUser', row._id).then(res => {
+                    this.$message({
+                        type: 'success',
+                        message: '删除用户成功'
+                    })
+                    this.$store.dispatch('user/getUsers', { limit: this.pageSize })
+                })
+            })
+        },
+        editRoles(row) {
+            this.$router.push({path: `/ManagementEnd/updateRoles/${row._id}`})
         }
     },
     watch: {

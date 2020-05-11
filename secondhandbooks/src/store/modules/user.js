@@ -8,7 +8,9 @@ import { login,
          getMyCartList,
          updateCartList,
          moveToCollection,
-         getUsers } from '@/api/user'
+         getUsers,
+         resetPassword,
+         removeUser } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const state = {
@@ -229,6 +231,28 @@ const actions = {
                 const { data } = res.data
                 commit('SET_USERLIST', data)
                 resolve(res.data.data)
+            })
+        })
+    },
+
+    // 重置用户密码
+    resetPassword({ commit }, id) {
+        return new Promise((resolve, reject) => {
+            resetPassword(id).then(res => {
+                resolve(res)
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    },
+
+    // 删除用户
+    removeUser({ commit }, id) {
+        return new Promise((resolve, reject) => {
+            removeUser(id).then(res => {
+                resolve(res)
+            }).catch(err => {
+                reject(err)
             })
         })
     }

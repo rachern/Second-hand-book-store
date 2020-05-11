@@ -74,6 +74,16 @@ function updateCartList(id, cartList) {
 function getUsers(limit, skip) {
     return User.find({},{password:0}).skip(parseInt(skip)).limit(parseInt(limit))
 }
+
+// 重置用户密码
+function resetPassword(id, password) {
+    return User.findOneAndUpdate({_id: id}, {password})
+}
+
+// 删除用户
+function removeUser(id) {
+    return User.findByIdAndRemove(id)
+}
  
 module.exports = {
     createUser,
@@ -86,5 +96,7 @@ module.exports = {
     getMyCartList,
     updateCartList,
     updateCollections,
-    getUsers
+    getUsers,
+    resetPassword,
+    removeUser
 }

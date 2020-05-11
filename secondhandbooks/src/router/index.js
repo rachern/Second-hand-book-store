@@ -247,6 +247,13 @@ const routes = [
         meta: {title: '用户管理'}
       },
       {
+        // 修改用户权限
+        path: 'updateRoles/:id',
+        name: 'updateRoles',
+        component: () => import('../components/managementEnd/userManagement/updateRoles'),
+        meta: {title: '修改权限'}
+      },
+      {
         // 消息推送
         path: 'messagePush',
         name: 'messagePush',

@@ -103,3 +103,21 @@ export function getUsers(limit, skip) {
         params: { limit, skip }
     })
 }
+
+// 重置用户密码
+export function resetPassword(id) {
+    return request({
+        url: '/user/resetPassword',
+        method: 'post',
+        data: { id }
+    })
+}
+
+// 删除用户
+export function removeUser(id) {
+    return request({
+        url: '/user/removeUser',
+        method: 'post',
+        data: { id }
+    })
+}

@@ -15,7 +15,9 @@ const { createUser,
         getMyCartList,
         updateCartList,
         updateCollections,
-        getUsers } = require('../service/user')
+        getUsers,
+        resetPassword,
+        removeUser } = require('../service/user')
 const { getMyCollectionBooks } = require('../service/book')
 const { decoded } = require('../utils')
 
@@ -229,6 +231,29 @@ router.get('/getUsers', async (req, res) => {
         new Result(userList, '用户列表获取成功').success(res)
     } else {
         new Result('用户列表获取失败').fail(res)
+    }
+})
+
+// 重置用户密码
+router.post('/resetPassword', async (req, res) => {
+    const { id } = req.body
+    const password = MD5(`123456${PWD_SALT}`).toString()
+    const result = await resetPassword(id, password)
+    if(result) {
+        new Result('重置用户密码成功').success(res)
+    } else {
+        new Result('重置用户密码失败').fail(res)
+    }
+})
+
+// 删除用户
+router.post('/removeUser', async (req, res) => {
+    const { id } = req.body
+    const result = await removeUser(id)
+    if(result) {
+        new Result('删除用户成功').success(res)
+    } else {
+        new Result('删除用户失败').fail(res)
     }
 })
 
