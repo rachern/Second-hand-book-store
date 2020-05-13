@@ -21,7 +21,8 @@ const getters = {
     comments: state => state.comment.comments,
     askingBooks: state => state.askingBook.askingBooks,
     myAskingBooks: state => state.askingBook.myAskingBooks,
-    addressList: state => state.address.addressList
+    addressList: state => state.address.addressList,
+    // roles: state => state.role.roles
 }
 
 export default getters

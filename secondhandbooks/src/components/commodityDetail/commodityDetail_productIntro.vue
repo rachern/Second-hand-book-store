@@ -16,8 +16,8 @@
             </div><br/>
             <div class="button">
                 <el-button type="danger" icon="el-icon-chat-dot-round">联系卖家</el-button>
-                <el-button type="danger" icon="el-icon-shopping-cart-1">加入购物车</el-button>
-                <el-button type="danger" icon="el-icon-star-on">收藏</el-button>
+                <el-button type="danger" icon="el-icon-shopping-cart-1" @click="moveToShoppingCart">加入购物车</el-button>
+                <el-button type="danger" icon="el-icon-star-on" @click="moveToCollections">收藏</el-button>
             </div>
         </div>
     </div>
@@ -30,6 +30,18 @@ export default {
     data(){
         return {
             num: 1
+        }
+    },
+    methods: {
+        moveToShoppingCart() {
+            this.$store.dispatch('user/moveToShoppingCart', {id:this.bookDetail._id, num:this.num}).then(res => {
+                this.$message.success('加入购物车成功')
+            })
+        },
+        moveToCollections() {
+            this.$store.dispatch('user/moveToCollections', this.bookDetail._id).then(res => {
+                this.$message.success(res.msg)
+            })
         }
     },
     computed: {

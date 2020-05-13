@@ -129,7 +129,7 @@ export default {
                     email: user.email,
                     introduction: user.introduction,
                     phoneNumber: user.phoneNumber,
-                    roles: user.roles.join(','),
+                    roles: user.roles.join('， '),
                     sex: user.sex === 0 ? '男' : '女',
                     url: user.url,
                     username: user.username

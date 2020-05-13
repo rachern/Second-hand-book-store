@@ -121,3 +121,39 @@ export function removeUser(id) {
         data: { id }
     })
 }
+
+// 根据用户id获取用户权限
+export function getUserRolesById(id) {
+    return request({
+        url: '/user/getUserRolesById',
+        method: 'get',
+        params: { id }
+    })
+}
+
+// 根据用户id修改用户权限
+export function updateUserRolesById(obj) {
+    return request({
+        url: '/user/updateUserRolesById',
+        method: 'post',
+        data: obj
+    })
+}
+
+// 将商品移入购物车
+export function moveToShoppingCart(obj) {
+    return request({
+        url: '/user/moveToShoppingCart',
+        method: 'post',
+        data: obj
+    })
+}
+
+// 将商品移入收藏夹
+export function moveToCollections(id) {
+    return request({
+        url: '/user/moveToCollections',
+        method: 'post',
+        data: { id }
+    })
+}

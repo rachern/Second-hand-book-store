@@ -84,6 +84,31 @@ function resetPassword(id, password) {
 function removeUser(id) {
     return User.findByIdAndRemove(id)
 }
+
+// 根据用户id获取用户权限
+function getUserRolesById(id) {
+    return User.findOne({_id: id}, {roles: 1})
+}
+
+// 根据用户id修改用户权限
+function updateUserRolesById(id, roles) {
+    return User.findByIdAndUpdate(id, {roles})
+}
+
+// 向购物车添加商品数量
+function addToShoppingCart(_id, id, num) {
+    return User.findOneAndUpdate({_id, 'cartList.id':mongoose.Types.ObjectId(id)}, {$set: {'cartList.$.num': num}})
+}
+
+// 向购物车添加书籍
+function moveToShoppingCart(_id, obj) {
+    return User.findOneAndUpdate({_id}, {$push: {'cartList': obj}})
+}
+
+// 向收藏夹添加书籍
+function moveToCollections(_id, id) {
+    return User.findOneAndUpdate({_id}, {$push: {collections:mongoose.Types.ObjectId(id)}})
+}
  
 module.exports = {
     createUser,
@@ -98,5 +123,10 @@ module.exports = {
     updateCollections,
     getUsers,
     resetPassword,
-    removeUser
+    removeUser,
+    getUserRolesById,
+    updateUserRolesById,
+    addToShoppingCart,
+    moveToShoppingCart,
+    moveToCollections
 }

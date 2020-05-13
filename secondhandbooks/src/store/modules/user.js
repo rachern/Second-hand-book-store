@@ -10,7 +10,11 @@ import { login,
          moveToCollection,
          getUsers,
          resetPassword,
-         removeUser } from '@/api/user'
+         removeUser,
+         getUserRolesById,
+         updateUserRolesById,
+         moveToShoppingCart,
+         moveToCollections } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const state = {
@@ -253,6 +257,42 @@ const actions = {
                 resolve(res)
             }).catch(err => {
                 reject(err)
+            })
+        })
+    },
+
+    // 根据用户id获取用户权限
+    getUserRolesById({ commit }, id) {
+        return new Promise((resolve, reject) => {
+            getUserRolesById(id).then(res => {
+                resolve(res.data.data)
+            })
+        })
+    },
+
+    // 根据用户id修改用户权限
+    updateUserRolesById({ commit }, obj) {
+        return new Promise((resolve, reject) => {
+            updateUserRolesById(obj).then(res => {
+                resolve(res)
+            })
+        })
+    },
+
+    // 将商品移入购物车
+    moveToShoppingCart({ commit }, obj) {
+        return new Promise((resolve, reject) => {
+            moveToShoppingCart(obj).then(res => {
+                resolve(res)
+            })
+        })
+    },
+
+    // 将商品移入收藏夹
+    moveToCollections({ commit }, id) {
+        return new Promise((resolve, reject) => {
+            moveToCollections(id).then(res => {
+                resolve(res.data)
             })
         })
     }

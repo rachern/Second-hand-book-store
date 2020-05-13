@@ -17,7 +17,12 @@ const { createUser,
         updateCollections,
         getUsers,
         resetPassword,
-        removeUser } = require('../service/user')
+        removeUser,
+        getUserRolesById,
+        updateUserRolesById,
+        addToShoppingCart,
+        moveToShoppingCart,
+        moveToCollections } = require('../service/user')
 const { getMyCollectionBooks } = require('../service/book')
 const { decoded } = require('../utils')
 
@@ -255,6 +260,91 @@ router.post('/removeUser', async (req, res) => {
     } else {
         new Result('删除用户失败').fail(res)
     }
+})
+
+// 根据用户id获取用户权限
+router.get('/getUserRolesById', async (req, res) => {
+    const { id } = req.query
+    const userRoles = await getUserRolesById(id)
+    if(userRoles) {
+        new Result(userRoles, '获取成功').success(res)
+    } else {
+        new Result('获取失败').fail(res)
+    }
+})
+
+// 根据用户id修改用户权限
+router.post('/updateUserRolesById', async (req, res) => {
+    const { roles, id } = req.body
+    const result = await updateUserRolesById(id, roles)
+    if(result) {
+        new Result('用户权限修改成功').success(res)
+    } else {
+        new Result('用户权限修改失败').fail(res)
+    }
+})
+
+// 将商品移入购物车
+router.post('/moveToShoppingCart', async (req, res) => {
+    const decode = decoded(req)
+    if(decode && decode._id) {
+        const { id, num } = req.body
+        // 获取用户的购物车列表
+        const myCartList = await getMyCartList(decode._id)
+        const { cartList } = myCartList[0]
+        // 判断书籍是否已在购物车
+        let inCartList = false;
+        let now_num;
+        cartList.forEach((element,i) => {
+            if(element.id == id) {
+                inCartList = true
+                now_num = element.num
+            }
+        })
+        if(inCartList) {
+            // 如果已在购物车，只添加数量
+            const result = await addToShoppingCart(decode._id, id, now_num + num)
+            if(result) {
+                new Result('加入购物车成功').success(res)
+            } else {
+                new Result('加入购物车失败').fail(res)
+            }
+        } else {
+            // 如果不在购物车，添加书籍
+            const result = await moveToShoppingCart(decode._id, {id:mongoose.Types.ObjectId(id),num,checked:true})
+            if(result) {
+                new Result('加入购物车成功').success(res)
+            } else {
+                new Result('加入购物车失败').fail(res)
+            }
+        }
+    }
+})
+
+// 将商品移入收藏夹
+router.post('/moveToCollections', async (req, res) => {
+    const decode = decoded(req)
+    if(decode && decode._id) {
+        const { id } = req.body
+        const col = await getCollections(decode._id)
+        const { collections } = col
+        var inCollections = collections.some(element => {
+            return element == id
+        })
+        if(inCollections) {
+            // 如果书籍已在收藏夹
+            new Result('该书籍已在收藏夹，请勿重复添加').success(res)
+        } else {
+            // 如果不在收藏夹
+            const result = await moveToCollections(decode._id, id)
+            if(result) {
+                new Result('添加收藏夹成功').success(res)
+            } else {
+                new Result('添加收藏夹失败').fail(res)
+            }
+        }
+    }
+
 })
 
 module.exports = router;

@@ -3,25 +3,22 @@
         <div class="title" id="update-roles-title"><h4>修改用户权限</h4></div>
         <div class="editRoles">
             <div class="form-wrap">
-                <el-form ref="updateRolesForm" :model="updateRolesForm" label-width="100px" :rules="updateRolesRules">
+                <el-form ref="updateRolesForm" :model="updateRolesForm" label-width="100px">
                     <el-form-item label="用户权限" prop="roles">
                         <el-select
-                            v-model="updateRolesForm.roles"
-                            filterable
-                            allow-create
-                            default-first-option
+                            v-model="updateRolesForm.selectedRoles"
+                            multiple
                             placeholder="请选择用户权限">
                             <el-option
-                                v-for="item in level_1s"
+                                v-for="item in roles"
                                 :key="item.value"
                                 :label="item.label"
                                 :value="item.value">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item>
+                    <el-form-item class="btn">
                         <el-button type="primary" @click="onSubmit">确定</el-button>
-                        <el-button @click="cancel">取消</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -34,18 +31,43 @@ export default {
     data() {
         return {
             updateRolesForm: {
-                roles: []
+                selectedRoles: []
             },
-            level_1s: []
+            roles: []
         }
     },
     methods: {
         onSubmit() {
-
-        },
-        cancel() {
-
+            this.$store.dispatch('user/updateUserRolesById', {roles: this.updateRolesForm.selectedRoles, id: this.$route.params.id}).then(res => {
+                this.$message.success('用户权限修改成功')
+                this.$router.push({path: '/ManagementEnd/userManagement'})
+            })
         }
+    },
+    watch: {
+        'updateRolesForm.selectedRoles': {
+            handler: function(roles) {
+                if(roles.indexOf('user') === -1) {
+                    this.$message.warning('用户是基本角色，不可删除')
+                    this.updateRolesForm.selectedRoles.push('user')
+                }
+            }
+        }
+    },
+    created() {
+        const { id } = this.$route.params
+        this.$store.dispatch('user/getUserRolesById', id).then(res => {
+            this.updateRolesForm.selectedRoles = res.roles
+        })
+        this.$store.dispatch('role/getRoles').then(res => {
+            let roles = []
+            res.forEach(element => {
+                if(element.role !== 'superAdmin') {
+                    roles.push({value:element.role, label:element.roleName})
+                }
+            })
+            this.roles = roles
+        })
     }
 }
 </script>
@@ -82,6 +104,9 @@ export default {
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%,-50%);
+            }
+            .btn{
+                margin-top: 100px;
             }
         }
     }
