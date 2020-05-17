@@ -18,8 +18,8 @@
                     <i class="iconfont icon-hudong"></i>
                     <span slot="title">
                         互动消息
-                        <span class="message-count" v-if="messages.interactiveMessage.unread.length > 0">
-                            {{ messages.interactiveMessage.unread.length }}
+                        <span class="message-count" v-if="unreadMessage > 0">
+                            {{ unreadMessage }}
                         </span>
                     </span>
                 </el-menu-item>
@@ -33,7 +33,8 @@
 export default {
     data() {
         return {
-            activeIndex: ''
+            activeIndex: '',
+            unreadMessage: 0
         }
     },
     methods: {
@@ -46,6 +47,16 @@ export default {
             handler: function(route) {
                 // console.log(route.name)
                 this.activeIndex = route.name
+            },
+            immediate: true
+        },
+        messages: {
+            handler: function(newValue) {
+                let unreadMessage = 0
+                for(let key in newValue.interactiveMessage.unread) {
+                    unreadMessage += newValue.interactiveMessage.unread[key].length
+                }
+                this.unreadMessage = unreadMessage
             },
             immediate: true
         }

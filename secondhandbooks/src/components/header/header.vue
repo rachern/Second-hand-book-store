@@ -4,8 +4,8 @@
             <div class="menu clearfix">
                 <div class="pointer menu_item message" @click="toView('/PersonalCenter/message/systemMessage')">
                     消息
-                    <span class="message-count" v-if="JSON.stringify(messages) != '{}' && messages.interactiveMessage.unread.length + messages.systemMessage.unread.length > 0">
-                        {{messages.interactiveMessage.unread.length + messages.systemMessage.unread.length}}
+                    <span class="message-count" v-if="unreadMessage > 0">
+                        {{unreadMessage}}
                     </span>
                 </div>
                 <div class="pointer menu_item personal_center" @click="toView('/PersonalCenter')">
@@ -53,11 +53,25 @@
 export default {
     data() {
         return {
-            showUser: false
+            showUser: false,
+            unreadMessage: 0
         }
     },
     mounted() {
         this.showUser = (this.username && this.avatar) ? true : false
+    },
+    watch: {
+        messages: {
+            handler: function(newValue) {
+                let unreadMessage = 0
+                unreadMessage += newValue.systemMessage.unread.length
+                for(let key in newValue.interactiveMessage.unread) {
+                    unreadMessage += newValue.interactiveMessage.unread[key].length
+                }
+                this.unreadMessage = unreadMessage
+            },
+            immediate: true
+        }
     },
     computed: {
         username() {

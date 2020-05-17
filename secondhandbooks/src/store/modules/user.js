@@ -30,7 +30,8 @@ const state = {
     myCollectionBooks: [],
     myCartList: {},
     userList: [],
-    messages: {}
+    messages: {},
+    nowIndex: ''
 }
 
 const mutations = {
@@ -69,6 +70,9 @@ const mutations = {
     },
     SET_MESSAGES: (state, messages) => {
         state.messages = messages
+    },
+    SET_NOWINDEX: (state, index) => {
+        state.nowIndex = index
     }
 }
 
@@ -313,6 +317,11 @@ const actions = {
     // 储存用户消息
     messages({ commit }, messages) {
         commit('SET_MESSAGES', messages)
+    },
+
+    // 储存当前聊天对象
+    nowIndex({ commit }, index) {
+        commit('SET_NOWINDEX', index)
     }
 }
 

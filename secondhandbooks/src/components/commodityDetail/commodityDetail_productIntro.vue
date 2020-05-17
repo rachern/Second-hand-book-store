@@ -15,7 +15,7 @@
                 <el-input-number v-model="num" :min="1" :max="bookDetail.number"></el-input-number>
             </div><br/>
             <div class="button">
-                <el-button type="danger" icon="el-icon-chat-dot-round">联系卖家</el-button>
+                <el-button type="danger" icon="el-icon-chat-dot-round" @click="contactSeller">联系卖家</el-button>
                 <el-button type="danger" icon="el-icon-shopping-cart-1" @click="moveToShoppingCart">加入购物车</el-button>
                 <el-button type="danger" icon="el-icon-star-on" @click="moveToCollections">收藏</el-button>
             </div>
@@ -42,6 +42,16 @@ export default {
             this.$store.dispatch('user/moveToCollections', this.bookDetail._id).then(res => {
                 this.$message.success(res.msg)
             })
+        },
+        contactSeller() {
+            this.$socket.emit('contactSeller', {
+                username: this.$store.getters.username,
+                toUser: JSON.stringify({username:this.bookDetail.issuer.username,
+                        avatar:this.bookDetail.issuer.url})
+            })
+            this.$router.push({ path: '/PersonalCenter/message/interactiveMessage',
+                                query: { toUser: JSON.stringify({username:this.bookDetail.issuer.username,
+                        avatar:this.bookDetail.issuer.url})} })
         }
     },
     computed: {

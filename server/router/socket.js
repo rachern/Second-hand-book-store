@@ -1,5 +1,10 @@
 // const { pushSystemMessage } = require('../service/message')
-const { getMessages, getAllUsers, pushSystemMessage, hasReadSystemMessage } = require('../service/user')
+const { getMessages, 
+        getAllUsers, 
+        pushSystemMessage, 
+        hasReadSystemMessage,
+        pushInteractiveMessage,
+        hasReadInteractiveMessage } = require('../service/user')
 
 module.exports = function(io) {
     // 用于存储在线用户的对象
@@ -10,7 +15,9 @@ module.exports = function(io) {
         socket.on('username', async username => {
             const messages = await getMessages(username)
             // 发送消息给对应用户
-            io.sockets.to(socket.id).emit('accept messages', messages.message)
+            if(messages) {
+                io.sockets.to(socket.id).emit('accept messages', messages.message)
+            }
             if(username) {
                 users[username] = socket.id
             }
@@ -34,15 +41,12 @@ module.exports = function(io) {
             }
             // 写入用户的系统未读消息中
             for(let user of allUsersList) {
-                await pushSystemMessage(user, title, content)
+                const message = await pushSystemMessage(user, title, content)
+                // 判断用户是否在线
+                if(users[user]) {
+                    io.sockets.to(users[user]).emit('accept messages', message.message)
+                }
             }
-            // 获取在线用户的消息进行发送
-            for(let user in users) {
-                const message = await getMessages(user)
-                io.sockets.to(users[user]).emit('accept messages', message.message)
-                console.log(user,message)
-            }
-            // io.sockets.emit('accept message', data)
         })
 
         // 已读系统消息，将用户的未读消息全部移到已读
@@ -52,9 +56,88 @@ module.exports = function(io) {
                 unread: [],
                 read: message.message.systemMessage.read.concat(message.message.systemMessage.unread)
             }
-            await hasReadSystemMessage(data,newState)
-            const newMessage = await getMessages(data)
+            const newMessage = await hasReadSystemMessage(data,newState)
+            // const newMessage = await getMessages(data)
             io.sockets.to(users[data]).emit('accept messages', newMessage.message)
+        })
+
+        // 监听互动消息
+        socket.on('send interactiveMessage', async data => {
+            // console.log(data)
+            const toUsername = data.to.username
+            const fromUsername = data.from.username
+            const toUser = await getMessages(toUsername)
+            const fromUser = await getMessages(fromUsername)
+            // console.log(toUser.message.interactiveMessage)
+            // console.log(fromUser.message.interactiveMessage)
+            if(toUser.message.interactiveMessage.unread[JSON.stringify(data.from)]) {
+                toUser.message.interactiveMessage.unread[JSON.stringify(data.from)].push({
+                    from: data.from,
+                    content: data.content
+                })
+            } else {
+                toUser.message.interactiveMessage.unread[JSON.stringify(data.from)] = [{
+                    from: data.from,
+                    content: data.content
+                }]
+            }
+            
+            if(fromUser.message.interactiveMessage.read[JSON.stringify(data.to)]) {
+                fromUser.message.interactiveMessage.read[JSON.stringify(data.to)].push({
+                    to: data.to,
+                    content: data.content
+                })
+            } else {
+                fromUser.message.interactiveMessage.read[JSON.stringify(data.to)] = [{
+                    to: data.to,
+                    content: data.content
+                }]
+            }
+            
+            const newToMessage = await pushInteractiveMessage(toUsername,toUser.message.interactiveMessage)
+            const newFromMessage = await pushInteractiveMessage(fromUsername,fromUser.message.interactiveMessage)
+            // console.log(newToMessage)
+            // console.log(newFromMessage)
+            // 如果接收方在线
+            if(users[toUsername]) {
+                io.sockets.to(users[toUsername]).emit('accept messages', newToMessage.message)
+            }
+            io.sockets.to(users[fromUsername]).emit('accept messages', newFromMessage.message)
+        })
+
+        // 已读互动消息，将对应用户的未读消息移到已读
+        socket.on('hasReadInteractiveMessage', async data => {
+            const { user, other } = data
+            // console.log(data)
+            const messages = await getMessages(user)
+            const message = messages.message
+            let newRead = []
+            // console.log(message.interactiveMessage.read[other])
+            if(!message.interactiveMessage.read[other]) {
+                message.interactiveMessage.read[other] = []
+            }
+            if(message.interactiveMessage.unread[other]) {
+                newRead = message.interactiveMessage.read[other].concat(message.interactiveMessage.unread[other])
+            } else {
+                newRead = message.interactiveMessage.read[other]
+            }
+            message.interactiveMessage.read[other] = newRead
+            message.interactiveMessage.unread[other] = []
+            const newMessage = await hasReadInteractiveMessage(user, message)
+            io.sockets.to(users[user]).emit('accept messages', newMessage.message)
+        })
+
+        // 联系卖家
+        socket.on('contactSeller', async data => {
+            console.log(data)
+            const { username, toUser } = data
+            const messages = await getMessages(username)
+            const { message } = messages
+            if(!message.interactiveMessage.read[toUser] && !message.interactiveMessage.unread[toUser]) {
+                message.interactiveMessage.unread[toUser] = []
+                const newMessage = await hasReadInteractiveMessage(username, message)
+                io.sockets.to(users[username]).emit('accept messages', newMessage.message)
+            }
         })
     })
 }

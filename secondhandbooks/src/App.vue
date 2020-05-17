@@ -18,6 +18,14 @@ export default {
     'accept messages'(data) {
       console.log(data)
       this.$store.dispatch('user/messages', data)
+      if(this.$store.getters.nowIndex) {
+        if(data.interactiveMessage.unread[this.$store.getters.nowIndex].length != 0) {
+          this.$socket.emit('hasReadInteractiveMessage', {
+              user: this.$store.getters.username,
+              other: this.$store.getters.nowIndex
+          })
+        }
+      }
     }
   },
   computed: {

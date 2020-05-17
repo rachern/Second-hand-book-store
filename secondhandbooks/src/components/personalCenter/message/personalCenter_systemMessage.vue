@@ -52,6 +52,8 @@ export default {
         margin-bottom: 20px;
         text-align: left;
         background-color: #fff;
+        max-height: 600px;
+        overflow: auto;
         .systemMessage_title{
             background-color: #f3f3f3;
             height: 40px;
@@ -64,6 +66,17 @@ export default {
             margin: 10px;
             padding: 0 10px;
             min-height: 330px;
+            .el-collapse{
+                max-height: 446px;
+                overflow: auto;
+                &::-webkit-scrollbar{
+                    width: 6px;
+                }
+                &::-webkit-scrollbar-thumb {
+                    background-color: rgba(128,128,128,.6);
+                    border-radius: 5px;
+                }
+            }
             .nothing{
                 text-align: center;
             }

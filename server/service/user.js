@@ -17,8 +17,8 @@ function createUser(username, password, phoneNumber) {
                 read: []
             },
             interactiveMessage: {
-                unread: [],
-                read: []
+                unread: {},
+                read: {}
             }
         }
     })
@@ -132,14 +132,24 @@ function getAllUsers() {
 
 // 写入系统未读消息
 function pushSystemMessage(username, title, content) {
-    return User.findOneAndUpdate({ username }, { $push: {'message.systemMessage.unread': {title, content}}})
+    return User.findOneAndUpdate({ username }, { $push: {'message.systemMessage.unread': {title, content}}}, {new: true})
 }
 
 // 已读系统消息
 function hasReadSystemMessage(username, newState) {
-    return User.findOneAndUpdate({ username }, {'message.systemMessage': newState})
+    return User.findOneAndUpdate({ username }, {'message.systemMessage': newState}, {new: true})
 }
  
+// 写入互动消息
+function pushInteractiveMessage(username, message) {
+    return User.findOneAndUpdate({ username }, {'message.interactiveMessage': message}, {new: true})
+}
+
+// 已读互动消息
+function hasReadInteractiveMessage(username, message) {
+    return User.findOneAndUpdate({ username }, {message}, {new: true})
+}
+
 module.exports = {
     createUser,
     findUser,
@@ -162,5 +172,7 @@ module.exports = {
     getMessages,
     getAllUsers,
     pushSystemMessage,
-    hasReadSystemMessage
+    hasReadSystemMessage,
+    pushInteractiveMessage,
+    hasReadInteractiveMessage
 }
