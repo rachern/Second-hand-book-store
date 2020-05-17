@@ -1,5 +1,5 @@
 <template>
-    <div class="personalCenter_message">
+    <div class="personalCenter_message clearfix">
         <div class="nav">
             <el-menu
                 :default-active="activeIndex"
@@ -7,11 +7,21 @@
                 @select="handleSelect">
                 <el-menu-item index="systemMessage">
                     <i class="iconfont icon-xitongxiaoxi"></i>
-                    <span slot="title">系统消息</span>
+                    <span slot="title">
+                        系统消息
+                        <span class="message-count" v-if="messages.systemMessage.unread.length > 0">
+                            {{ messages.systemMessage.unread.length }}
+                        </span>
+                    </span>
                 </el-menu-item>
                 <el-menu-item index="interactiveMessage">
                     <i class="iconfont icon-hudong"></i>
-                    <span slot="title">互动消息</span>
+                    <span slot="title">
+                        互动消息
+                        <span class="message-count" v-if="messages.interactiveMessage.unread.length > 0">
+                            {{ messages.interactiveMessage.unread.length }}
+                        </span>
+                    </span>
                 </el-menu-item>
             </el-menu>
         </div>
@@ -39,6 +49,11 @@ export default {
             },
             immediate: true
         }
+    },
+    computed: {
+        messages() {
+            return this.$store.getters.messages
+        }
     }
 }
 </script>
@@ -64,6 +79,16 @@ export default {
                 font-size: 24px;
                 padding-right: 10px;
             }
+        }
+        .message-count{
+            display: inline-block;
+            border-radius: 50%;
+            font-size: 12px;
+            line-height: 18px;
+            min-height: 18px;
+            min-width: 18px;
+            background-color: rgba(237,31,31,0.9);
+            color: white;
         }
     }
 </style>

@@ -24,6 +24,9 @@
 
 <script>
 import { login } from '@/api/user'
+import Vue from 'vue'
+import VueSocketIO from 'vue-socket.io'
+
 export default {
     props: ['redirect'],
     data(){
@@ -53,14 +56,6 @@ export default {
             }
         }
     },
-    // watch: {
-    //     $router: {
-    //         handler: function(route) {
-    //             console.log(route)
-    //         },
-    //         immediate: true
-    //     }
-    // },
     methods:{
         onLogin(){
             this.$refs['loginForm'].validate(valid => {
@@ -68,14 +63,10 @@ export default {
                     this.errMsg = ""
                     this.$store.dispatch('user/login', this.loginForm)
                         .then(res => {
-                            // if(res && res.msg === "用户名或密码错误") {
-                            //     this.errMsg = "用户名或密码错误"
-                            // } else {
-                                if(this.redirect){
-                                    this.$router.push({ path: this.redirect })
-                                }
-                                this.$router.push({ path: '/' })
-                            // }
+                            if(this.redirect){
+                                this.$router.push({ path: this.redirect })
+                            }
+                            this.$router.push({ path: '/' })
                         })
                         .catch(err => {
                             console.log(err)

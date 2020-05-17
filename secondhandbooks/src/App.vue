@@ -8,6 +8,31 @@
   </div>
 </template>
 
+<script>
+import { mapGetters } from 'vuex'
+export default {
+  sockets: {
+    connect(){
+        console.log('socket connected')
+    },
+    'accept messages'(data) {
+      console.log(data)
+      this.$store.dispatch('user/messages', data)
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'username'
+    ])
+  },
+  watch: {
+    username(name) {
+      this.$socket.emit('username', name)
+    }
+  }
+}
+</script>
+
 <style lang="scss">
 html,body{
   height: 100%;

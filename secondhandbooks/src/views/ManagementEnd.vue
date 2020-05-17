@@ -67,8 +67,8 @@
             <div class="head">
                 <div class="menu_item user">
                     <div class="pointer user_name">
-                        jun
-                        <el-avatar :size="40" icon="el-icon-user-solid"></el-avatar>
+                        {{ $store.getters.username }}
+                        <el-avatar :size="40" :src="$store.getters.avatar"></el-avatar>
                     </div>
                 </div>
             </div>

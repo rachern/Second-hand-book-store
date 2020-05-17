@@ -45,7 +45,7 @@ module.exports = function(app){
         console.log(err)
         if(err.name && err.name === 'UnauthorizedError') {
             const { status = 401, message } = err
-            new Result(null, 'Token验证失败', {
+            new Result(null, 'Token验证失败,请重新登录', {
                 error: status,
                 errorMsg: message
             }).jwtError(res.status(status)) 

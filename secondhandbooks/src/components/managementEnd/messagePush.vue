@@ -3,32 +3,32 @@
         <div class="title" id="message-push-title"><h4>消息推送</h4></div>
         <div class="message-push-wrap">
             <div class="form-wrap">
-                <el-form ref="addClassificationForm" :model="addClassificationForm" label-width="160px" :rules="addClassificationRules">
+                <el-form ref="messageForm" :model="messageForm" :rules="messageRule" label-width="160px">
                     <el-form-item label="选择消息要推送的用户">
                         <el-select
-                            v-model="addClassificationForm.level_1"
+                            v-model="messageForm.selectedUsers"
                             filterable
-                            allow-create
+                            multiple
                             default-first-option
-                            placeholder="请选择消息要推送的用户">
+                            placeholder="请选择消息要推送的用户,不选推送至所有用户">
                             <el-option
-                                v-for="item in level_1s"
+                                v-for="item in users"
                                 :key="item.value"
                                 :label="item.label"
                                 :value="item.value">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="消息标题">
-                        <el-input v-model="addClassificationForm.level_2"
+                    <el-form-item label="消息标题" prop="title">
+                        <el-input v-model="messageForm.title"
                                   placeholder="请输入消息标题"></el-input>
                     </el-form-item>
-                    <el-form-item label="消息内容">
+                    <el-form-item label="消息内容" prop="content">
                         <el-input
                             type="textarea"
-                            :autosize="{ minRows: 4, maxRows: 6}"
+                            :autosize="{ minRows: 6, maxRows: 8}"
                             placeholder="请输入消息内容"
-                            v-model="textarea2">
+                            v-model="messageForm.content">
                         </el-input>
                     </el-form-item>
                     <el-form-item>
@@ -43,30 +43,69 @@
 
 <script>
 export default {
+    sockets: {
+        connect(){
+            console.log('socket connected')
+        },
+        'accept message'(data) {
+            console.log(data)
+        }
+    },
     data() {
+        const validateTitle = (rule, value, callback) => {
+            if (!value || value.length === 0) {
+                callback(new Error('标题不能为空'))
+            } else {
+                callback()
+            }
+        }
+
+        const validateContent = (rule, value, callback) => {
+            if (!value || value.length === 0) {
+                callback(new Error('内容不能为空'))
+            } else {
+                callback()
+            }
+        }
+
         return {
-            addClassificationForm: {},
-            addClassificationRules: {},
-            level_1s: [{
-                    value: 'HTML',
-                    label: 'HTML'
-                }, {
-                    value: 'CSS',
-                    label: 'CSS'
-                }, {
-                    value: 'JavaScript',
-                    label: 'JavaScript'
-            }],
-            textarea2: ''
+            messageForm: {
+                selectedUsers: [],
+                title: '',
+                content: ''
+            },
+            messageRule: {
+                title: [{ validator: validateTitle, trigger: 'blur' }],
+                content: [{ validator: validateContent, trigger: 'blur' }]
+            },
+            users: []
         }
     },
     methods: {
         onSubmit() {
-
+            this.$refs.messageForm.validate(valid => {
+                if(valid) {
+                    console.log(22222)
+                    this.$socket.emit('send systemMessage', this.messageForm)
+                    this.$message.success('发送成功')
+                    this.$refs['messageForm'].resetFields();
+                    this.messageForm.selectedUsers = []
+                } else {
+                    return false
+                }
+            })
         },
         cancel() {
-
+            this.$refs['messageForm'].resetFields();
+            this.messageForm.selectedUsers = []
         }
+    },
+    created() {
+        this.$store.dispatch('user/getAllUsers').then(res => {
+            res.forEach(user => {
+                this.users.push({value:user.username , label:user.username})
+            })
+        })
     }
 }
 </script>

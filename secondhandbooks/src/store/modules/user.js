@@ -14,7 +14,8 @@ import { login,
          getUserRolesById,
          updateUserRolesById,
          moveToShoppingCart,
-         moveToCollections } from '@/api/user'
+         moveToCollections,
+         getAllUsers } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const state = {
@@ -28,7 +29,8 @@ const state = {
     username: '',
     myCollectionBooks: [],
     myCartList: {},
-    userList: []
+    userList: [],
+    messages: {}
 }
 
 const mutations = {
@@ -64,6 +66,9 @@ const mutations = {
     },
     SET_USERLIST: (state, userList) => {
         state.userList = userList
+    },
+    SET_MESSAGES: (state, messages) => {
+        state.messages = messages
     }
 }
 
@@ -73,11 +78,9 @@ const actions = {
         const { username, password } = userInfo;
         return new Promise((resolve, reject) => {
             login({ username: username.trim(), password: password.trim() }).then(response => {
-                // console.log("1",response)
-                // if(response.data.msg && response.data.msg === '用户名或密码错误'){
-                //     resolve(response.data)
-                // }
+                
                 const { data } = response.data
+                // alert(data.token)
                 commit('SET_TOKEN', data.token)
                 setToken(data.token)
                 resolve()
@@ -113,7 +116,7 @@ const actions = {
     },
 
     // 重置token
-    resetToken({ commit }) {
+    resetToken({ commit, state }) {
         return new Promise(resolve => {
             commit('SET_TOKEN', '')
             commit('SET_ROLES', [])
@@ -161,7 +164,7 @@ const actions = {
     },
 
     // 登出
-    logout({ commit }) {
+    logout({ commit, state }) {
         return new Promise((resolve, reject) => {
             commit('SET_TOKEN', '')
             commit('SET_EMAIL', '')
@@ -171,6 +174,7 @@ const actions = {
             commit('SET_SEX', '')
             commit('SET_AVATAR', '')
             commit('SET_USERNAME', '')
+            commit('SET_MESSAGES', {})
             removeToken()
             resolve()
         })
@@ -295,6 +299,20 @@ const actions = {
                 resolve(res.data)
             })
         })
+    },
+
+    // 获取所有的用户
+    getAllUsers() {
+        return new Promise((resolve, reject) => {
+            getAllUsers().then(res => {
+                resolve(res.data.data)
+            })
+        })
+    },
+
+    // 储存用户消息
+    messages({ commit }, messages) {
+        commit('SET_MESSAGES', messages)
     }
 }
 

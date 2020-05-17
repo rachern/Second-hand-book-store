@@ -10,7 +10,17 @@ function createUser(username, password, phoneNumber) {
         sex: 0,
         introduction: '',
         email: '',
-        role: ['user']
+        roles: ['user'],
+        message: {
+            systemMessage: {
+                unread: [],
+                read: []
+            },
+            interactiveMessage: {
+                unread: [],
+                read: []
+            }
+        }
     })
 }
 
@@ -109,6 +119,26 @@ function moveToShoppingCart(_id, obj) {
 function moveToCollections(_id, id) {
     return User.findOneAndUpdate({_id}, {$push: {collections:mongoose.Types.ObjectId(id)}})
 }
+
+// 获取用户的消息列表
+function getMessages(username) {
+    return User.findOne({username}, {message: 1})
+}
+
+// 获取所有的用户
+function getAllUsers() {
+    return User.find()
+}
+
+// 写入系统未读消息
+function pushSystemMessage(username, title, content) {
+    return User.findOneAndUpdate({ username }, { $push: {'message.systemMessage.unread': {title, content}}})
+}
+
+// 已读系统消息
+function hasReadSystemMessage(username, newState) {
+    return User.findOneAndUpdate({ username }, {'message.systemMessage': newState})
+}
  
 module.exports = {
     createUser,
@@ -128,5 +158,9 @@ module.exports = {
     updateUserRolesById,
     addToShoppingCart,
     moveToShoppingCart,
-    moveToCollections
+    moveToCollections,
+    getMessages,
+    getAllUsers,
+    pushSystemMessage,
+    hasReadSystemMessage
 }

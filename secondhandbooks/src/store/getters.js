@@ -10,6 +10,7 @@ const getters = {
     myCollectionBooks: state => state.user.myCollectionBooks,
     myCartList: state => state.user.myCartList,
     userList: state => state.user.userList,
+    messages: state => state.user.messages,
     carousels: state => state.carousel.carousels,
     allCarousels: state => state.carousel.allCarousels,
     booktypes: state => state.booktype.booktypes,

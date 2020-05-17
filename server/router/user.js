@@ -22,7 +22,8 @@ const { createUser,
         updateUserRolesById,
         addToShoppingCart,
         moveToShoppingCart,
-        moveToCollections } = require('../service/user')
+        moveToCollections,
+        getAllUsers } = require('../service/user')
 const { getMyCollectionBooks } = require('../service/book')
 const { decoded } = require('../utils')
 
@@ -179,6 +180,7 @@ router.get('/getMyCollectionBooksCount', async (req, res) => {
 // 获取用户的购物车列表
 router.get('/getMyCartList', async (req, res) => {
     const decode = decoded(req)
+    console.log(decode._id)
     if(decode && decode._id) {
         const myCartList = await getMyCartList(decode._id)
         if(myCartList) {
@@ -345,6 +347,16 @@ router.post('/moveToCollections', async (req, res) => {
         }
     }
 
+})
+
+// 获取所有的用户
+router.get('/getAllUsers', async (req, res) => {
+    const userList = await getAllUsers()
+    if(userList) {
+        new Result(userList, '获取成功').success(res)
+    } else {
+        new Result('获取失败').fail(res)
+    }
 })
 
 module.exports = router;

@@ -4,6 +4,9 @@
             <div class="menu clearfix">
                 <div class="pointer menu_item message" @click="toView('/PersonalCenter/message/systemMessage')">
                     消息
+                    <span class="message-count" v-if="JSON.stringify(messages) != '{}' && messages.interactiveMessage.unread.length + messages.systemMessage.unread.length > 0">
+                        {{messages.interactiveMessage.unread.length + messages.systemMessage.unread.length}}
+                    </span>
                 </div>
                 <div class="pointer menu_item personal_center" @click="toView('/PersonalCenter')">
                     个人中心
@@ -62,6 +65,9 @@ export default {
         },
         avatar() {
             return this.$store.getters.avatar
+        },
+        messages() {
+            return this.$store.getters.messages
         }
     },
     methods: {
@@ -75,7 +81,6 @@ export default {
             // this.$message('click on item ' + command);
             if(command === "logout") {
                 this.$store.dispatch('user/logout').then(() => {
-                    console.log(1)
                     if(this.$route.path !== '/') {
                         this.$router.push({ path: '/' })
                     } else {
@@ -116,10 +121,28 @@ export default {
                 // right: 20px;
                 // height: 30px;
                 float: right;
+                width: 413px;
                 .menu_item{
                     float: right;
                     margin-right: 15px;
                     line-height: 35px;
+                }
+                .message{
+                    position: relative;
+                    .message-count{
+                        display: inline-block;
+                        padding: 3px;
+                        min-width: 16px;
+                        min-height: 16px;
+                        background-color: rgba(237,31,31,0.9);
+                        border-radius: 50%;
+                        position: absolute;
+                        top: -4px;
+                        right: -16px;
+                        line-height: 1;
+                        font-size: 12px;
+                        color: white;
+                    }
                 }
             }
             .search{

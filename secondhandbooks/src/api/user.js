@@ -157,3 +157,11 @@ export function moveToCollections(id) {
         data: { id }
     })
 }
+
+// 获取所有的用户
+export function getAllUsers() {
+    return request({
+        url: '/user/getAllUsers',
+        method: 'get'
+    }) 
+}

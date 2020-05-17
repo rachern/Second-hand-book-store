@@ -60,6 +60,11 @@ service.interceptors.response.use(
             type: 'error',
             duration: 5 * 1000
         })
+        if(msg === 'Token验证失败') {
+            store.dispatch('user/resetToken').then(() => {
+                this.$router.push({ path: '/' })
+            })
+        }
         return Promise.reject(error)
     }
 )

@@ -26,8 +26,9 @@ router.beforeEach(async (to, from, next) => {
                 next()
             } else {
                 try {
-                    const { roles } = await store.dispatch('user/getInfo')
+                    const { roles, username } = await store.dispatch('user/getInfo')
                     // console.log(roles)
+                    // this.$socket.emit('username', username)
                     next({ ...to, replace: true })
                 } catch (error) {
                     await store.dispatch('user/resetToken')

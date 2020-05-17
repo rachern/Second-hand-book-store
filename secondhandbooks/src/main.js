@@ -45,6 +45,12 @@ import {
 } from 'element-ui'
 import vRegion from 'v-region';
 import './permission'
+import VueSocketIO from 'vue-socket.io'
+
+Vue.use(new VueSocketIO({
+  debug: true,
+  connection: 'http://localhost:3001'
+}))
 
 //引入清除默认样式
 import './assets/scss/_reset.scss'

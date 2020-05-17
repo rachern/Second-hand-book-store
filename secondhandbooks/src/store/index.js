@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import getters from './getters'
 
+
 Vue.use(Vuex)
 
 // 批量引入./modules下的js文件
