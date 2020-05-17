@@ -8,11 +8,11 @@
                         <span>我的购物车</span>
                         <el-button style="float: right; padding: 3px 20px" type="text" @click="shoppingCart">更多 ></el-button>
                     </div>
-                    <div class="nothing" v-if="!hasOrders">
+                    <div class="nothing" v-if="cartList.length == 0">
                         <i class="iconfont icon-gouwuche"></i>
                         您的购物车都空空的，快去挑选合适的商品吧！
                     </div>
-                    <el-table :data="orders"
+                    <el-table :data="cartList"
                               style="width: 100%"
                               :show-header="false"
                               v-else>
@@ -29,7 +29,7 @@
                         <el-table-column width="120">
                             <template slot-scope="scope">
                                 <el-button
-                                    @click.native.prevent="checkDetail(scope.$index, orders)"
+                                    @click.native.prevent="checkDetail(scope.$index, cartList)"
                                     type="text"
                                     size="small">
                                     查看详情
@@ -202,12 +202,15 @@ export default {
             hasOrders: true,
             latestAsking: [],
             latestBooks: [],
-            latestCollections: []
+            latestCollections: [],
+            cartList: []
         }
     },
     methods: {
-        checkDetail(index, rows) {
-            console.log(index, rows)
+        checkDetail(index, rows) { 
+            // /CommodityDetail/5e82e55178552e24f8784eea
+            this.$router.push({ path: `/CommodityDetail/${rows[index]._id}` })
+            // console.log(index, rows)
         },
         shoppingCart() {
             this.$router.push({ path: '/ShoppingCart' })
@@ -234,6 +237,9 @@ export default {
         })
         this.$store.dispatch('user/getLatestFourCollections').then(res => {
             this.latestCollections = res.latestCollections
+        })
+        this.$store.dispatch('user/getMyCartList').then(res => {
+            this.cartList = res.linked_cartList.reverse().slice(0,3)
         })
     }
 }

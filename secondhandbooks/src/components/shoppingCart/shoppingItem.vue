@@ -55,21 +55,6 @@ export default {
             this.checked = newValue
         }
     }
-    // watch: {
-    //     bookNum(newValue) {
-    //         this.bookNumber = newValue
-    //     }
-    // },
-    // computed: {
-    //     book_num: {
-    //         get() {
-    //             return this.bookNum
-    //         },
-    //         set(val) {
-    //             console.log(val)
-    //         }
-    //     }
-    // }
 }
 </script>
 
