@@ -268,6 +268,43 @@ const routes = [
         meta: {title: '订单管理'}
       }
     ]
+  },
+  {
+    // 购物流程
+    path: '/ShoppingProcess',
+    name: 'ShoppingProcess',
+    component: () => import('../views/ShoppingProcess'),
+    meta: {title: '购物流程'},
+    children: [
+      {
+        // 提交订单
+        path: 'placeOrder',
+        name: 'placeOrder',
+        component: () => import('../components/shoppingProcess/placeOrder'),
+        meta: {title: '提交订单', name: 'placeOrder'}
+      },
+      {
+        // 支付
+        path: 'payment/:id',
+        name: 'payment',
+        component: () => import('../components/shoppingProcess/payment'),
+        meta: {title: '支付', name: 'payment'}
+      },
+      {
+        // 确认收货
+        path: 'confirmReceipt/:id',
+        name: 'confirmReceipt',
+        component: () => import('../components/shoppingProcess/confirmReceipt'),
+        meta: {title: '确认收货', name: 'confirmReceipt'}
+      },
+      {
+        // 评价
+        path: 'evaluate',
+        name: 'evaluate',
+        component: () => import('../components/shoppingProcess/evaluate'),
+        meta: {title: '评价', name: 'evaluate'}
+      }
+    ]
   }
 ]
 

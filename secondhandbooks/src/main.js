@@ -41,7 +41,9 @@ import {
   RadioGroup,
   Divider,
   Select,
-  Option
+  Option,
+  Steps,
+  Step
 } from 'element-ui'
 import vRegion from 'v-region';
 import './permission'
@@ -106,6 +108,8 @@ Vue.use(RadioGroup);
 Vue.use(Divider);
 Vue.use(Select);
 Vue.use(Option);
+Vue.use(Steps);
+Vue.use(Step);
 
 new Vue({
   router,

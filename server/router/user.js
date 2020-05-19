@@ -293,26 +293,36 @@ router.post('/moveToShoppingCart', async (req, res) => {
         const { id, num } = req.body
         // 获取用户的购物车列表
         const myCartList = await getMyCartList(decode._id)
-        const { cartList } = myCartList[0]
-        // 判断书籍是否已在购物车
-        let inCartList = false;
-        let now_num;
-        cartList.forEach((element,i) => {
-            if(element.id == id) {
-                inCartList = true
-                now_num = element.num
-            }
-        })
-        if(inCartList) {
-            // 如果已在购物车，只添加数量
-            const result = await addToShoppingCart(decode._id, id, now_num + num)
-            if(result) {
-                new Result('加入购物车成功').success(res)
+        console.log(myCartList)
+        if(myCartList.length != 0) {
+            const { cartList } = myCartList[0]
+            // 判断书籍是否已在购物车
+            let inCartList = false;
+            let now_num;
+            cartList.forEach((element,i) => {
+                if(element.id == id) {
+                    inCartList = true
+                    now_num = element.num
+                }
+            })
+            if(inCartList) {
+                // 如果已在购物车，只添加数量
+                const result = await addToShoppingCart(decode._id, id, now_num + num)
+                if(result) {
+                    new Result('加入购物车成功').success(res)
+                } else {
+                    new Result('加入购物车失败').fail(res)
+                }
             } else {
-                new Result('加入购物车失败').fail(res)
+                // 如果不在购物车，添加书籍
+                const result = await moveToShoppingCart(decode._id, {id:mongoose.Types.ObjectId(id),num,checked:true})
+                if(result) {
+                    new Result('加入购物车成功').success(res)
+                } else {
+                    new Result('加入购物车失败').fail(res)
+                }
             }
         } else {
-            // 如果不在购物车，添加书籍
             const result = await moveToShoppingCart(decode._id, {id:mongoose.Types.ObjectId(id),num,checked:true})
             if(result) {
                 new Result('加入购物车成功').success(res)

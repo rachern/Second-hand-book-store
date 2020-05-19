@@ -95,6 +95,11 @@ function passPostBook(id) {
     return Book.findOneAndUpdate({_id: id}, {state: 1})
 }
 
+// 修改书籍剩余数量
+function updateBooksNum(id, num) {
+    return Book.findOneAndUpdate({_id: id}, {number: num}, {new: true})
+}
+
 // 驳回待上架书籍审核
 function rejectPostBook(id, rejectReason) {
     return Book.findOneAndUpdate({_id: id}, {state: 2, rejectReason})
@@ -113,5 +118,6 @@ module.exports = {
     getPostBookReviewCount,
     getPostBookReviewList,
     passPostBook,
-    rejectPostBook
+    rejectPostBook,
+    updateBooksNum
 }

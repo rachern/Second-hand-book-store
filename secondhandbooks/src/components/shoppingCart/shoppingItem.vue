@@ -58,7 +58,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
     .shopping-item{
         display: flex;
         font-size: 14px;

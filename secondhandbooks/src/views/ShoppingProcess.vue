@@ -1,5 +1,5 @@
 <template>
-    <div class="shopping_cart">
+    <div class="shopping-process">
         <my-header></my-header>
         <contain></contain>
         <my-footer></my-footer>
@@ -8,7 +8,7 @@
 
 <script>
 import myHeader from '@/components/header/header';
-import contain from '@/components/shoppingCart/shoppingCart_contain';
+import contain from '@/components/shoppingProcess/shoppingProcess_contain';
 import myFooter from '@/components/footer/footer'
 
 export default {
@@ -16,15 +16,12 @@ export default {
         myHeader,
         contain,
         myFooter
-    },
-    created() {
-        this.$store.dispatch('user/getMyCartList')
     }
 }
 </script>
 
 <style lang="scss">
-    .shopping_cart{
+    .shopping-process{
         background-image: url('../assets/img/home_head_bg.jpg');
         background-size: contain;
     }

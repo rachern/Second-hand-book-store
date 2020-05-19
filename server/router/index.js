@@ -25,6 +25,7 @@ module.exports = function(app){
     app.use('/file',require('./file'))
     app.use('/address',require('./address'))
     app.use('/role',require('./role'))
+    app.use('/order',require('./order'))
 
     /**
      * 集中处理404请求的中间件

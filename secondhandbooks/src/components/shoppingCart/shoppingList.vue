@@ -38,7 +38,7 @@
                     <span @click="clearCartList">清空购物车</span>
                 </div>
                 <div class="toolbar-right">
-                    <div class="btn-area">去结算</div>
+                    <div class="btn-area" @click="toSettle">去结算</div>
                     <div class="price-sum">总价:<span>￥{{totalPrice}}</span></div>
                 </div>
             </div>
@@ -151,6 +151,10 @@ export default {
             this.$store.dispatch('user/moveToCollection', [this.cartList[index].id]).then(res => {
                 this.deleteThis(index)
             })
+        },
+        // 去结算
+        toSettle() {
+            this.$router.push({ path: '/ShoppingProcess/placeOrder' })
         }
     },
     computed: {
