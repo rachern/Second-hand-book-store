@@ -8,7 +8,7 @@ function placeOrder(orderMessage) {
 
 // 删除订单
 function deleteOrder(id) {
-    return Order.findByIdAndDelete(id)
+    return Order.findByIdAndUpdate(id, {state: 4}, {new: true})
 }
 
 // 根据id获取订单
@@ -28,10 +28,16 @@ function confirmReceipt(id) {
     return Order.findByIdAndUpdate(id, {state: 2, closingTime: time}, {new: true})
 }
 
+// 发表评价
+function evaluate(id) {
+    return Order.findByIdAndUpdate(id, {state: 3}, {new: true})
+}
+
 module.exports = {
     placeOrder,
     deleteOrder,
     getOrderById,
     paid,
-    confirmReceipt
+    confirmReceipt,
+    evaluate
 }

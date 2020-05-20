@@ -35,3 +35,12 @@ export function confirmReceipt(id) {
         data: { id }
     })
 }
+
+// 已评价
+export function evaluate(obj) {
+    return new request({
+        url: '/order/evaluate',
+        method: 'post',
+        data: obj
+    })
+}

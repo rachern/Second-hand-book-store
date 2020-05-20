@@ -2,9 +2,10 @@ const express = require('express')
 const mongoose = require('mongoose')
 
 const Result = require('../utils/Result')
-const { placeOrder, deleteOrder, getOrderById, paid, confirmReceipt } = require('../service/order')
+const { placeOrder, deleteOrder, getOrderById, paid, confirmReceipt, evaluate } = require('../service/order')
 const { getMyCartList, updateCartList } = require('../service/user')
 const { getBookDetail, updateBooksNum } = require('../service/book')
+const { addComments } = require('../service/comment')
 const { decoded } = require('../utils')
 
 const router = express.Router()
@@ -74,7 +75,7 @@ router.post('/paid', async (req, res) => {
 router.get('/getOrderById', async (req, res) => {
     const { id } = req.query
     const orderDetail = await getOrderById(id)
-    console.log(orderDetail)
+    // console.log(orderDetail)
     if(orderDetail) {
         new Result(orderDetail, '获取成功').success(res)
     } else {
@@ -90,6 +91,25 @@ router.post('/confirmReceipt', async (req, res) => {
         new Result('确认收货成功').success(res)
     } else {
         new Result('确认收货失败').fail(res)
+    }
+})
+
+// 已评价
+router.post('/evaluate', async (req, res) => {
+    const decode = decoded(req)
+    if(decode && decode._id) {
+        const { comments, id } = req.body
+        comments.forEach(async (comment, i) => {
+            comment.book = mongoose.Types.ObjectId(comment.book)
+            comment.reviewer = mongoose.Types.ObjectId(decode._id)
+            await addComments(comment)
+        })
+        const result = await evaluate(id)
+        if(result) {
+            new Result('发表评价成功').success(res)
+        } else {
+            new Result('发表评价失败').fail(res)
+        }
     }
 })
 

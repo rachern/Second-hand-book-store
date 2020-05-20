@@ -13,7 +13,7 @@ const commentSchema = new mongoose.Schema({
     },
     createdTime: {//评论时间
         type: String,
-        default: () => moment(new Date()).format('YYYY-MM-DD')
+        default: () => moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
     },
     reviewer: {//评论者
         type: mongoose.Schema.Types.ObjectId,

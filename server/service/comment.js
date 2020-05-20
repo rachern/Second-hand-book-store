@@ -14,7 +14,13 @@ function getComments(id, limit, skip) {
                   .populate('reviewer')
 }
 
+// 发表评论
+function addComments(comment) {
+    return Comment.create(comment)
+}
+
 module.exports = {
     getCommentCount,
-    getComments
+    getComments,
+    addComments
 }

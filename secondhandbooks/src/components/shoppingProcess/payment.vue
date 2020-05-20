@@ -20,7 +20,7 @@ export default {
     methods: {
         cancel() {
             // 跳转到订单待付款页面
-
+            this.$router.push({path: '/PersonalCenter/order/pay'})
         },
         confirm() {
             this.$store.dispatch('order/paid', this.id).then(res => {
