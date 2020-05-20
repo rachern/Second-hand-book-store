@@ -22,9 +22,16 @@ function paid(id) {
     return Order.findByIdAndUpdate(id, {state: 1, paymentTime: time}, {new: true})
 }
 
+// 确认收货
+function confirmReceipt(id) {
+    const time = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+    return Order.findByIdAndUpdate(id, {state: 2, closingTime: time}, {new: true})
+}
+
 module.exports = {
     placeOrder,
     deleteOrder,
     getOrderById,
-    paid
+    paid,
+    confirmReceipt
 }

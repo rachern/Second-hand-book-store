@@ -299,7 +299,7 @@ const routes = [
       },
       {
         // 评价
-        path: 'evaluate',
+        path: 'evaluate/:id',
         name: 'evaluate',
         component: () => import('../components/shoppingProcess/evaluate'),
         meta: {title: '评价', name: 'evaluate'}

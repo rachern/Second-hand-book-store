@@ -1,4 +1,4 @@
-import { placeOrder, paid, getOrderById } from '@/api/order'
+import { placeOrder, paid, getOrderById, confirmReceipt } from '@/api/order'
 
 const state = {
 
@@ -32,6 +32,15 @@ const actions = {
         return new Promise((resolve, reject) => {
             getOrderById(id).then(res => {
                 resolve(res.data.data)
+            })
+        })
+    },
+
+    // 确认收货
+    confirmReceipt({ commit }, id) {
+        return new Promise((resolve, reject) => {
+            confirmReceipt(id).then(res => {
+                resolve(res)
             })
         })
     }

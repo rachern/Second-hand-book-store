@@ -26,3 +26,12 @@ export function getOrderById(id) {
         params: { id }
     })
 }
+
+// 确认收货
+export function confirmReceipt(id) {
+    return new request({
+        url: '/order/confirmReceipt',
+        method: 'post',
+        data: { id }
+    })
+}

@@ -2,7 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 
 const Result = require('../utils/Result')
-const { placeOrder, deleteOrder, getOrderById, paid } = require('../service/order')
+const { placeOrder, deleteOrder, getOrderById, paid, confirmReceipt } = require('../service/order')
 const { getMyCartList, updateCartList } = require('../service/user')
 const { getBookDetail, updateBooksNum } = require('../service/book')
 const { decoded } = require('../utils')
@@ -79,6 +79,17 @@ router.get('/getOrderById', async (req, res) => {
         new Result(orderDetail, '获取成功').success(res)
     } else {
         new Result('获取失败').fail(res)
+    }
+})
+
+// 确认收货
+router.post('/confirmReceipt', async (req, res) => {
+    const { id } = req.body
+    const result = await confirmReceipt(id)
+    if(result) {
+        new Result('确认收货成功').success(res)
+    } else {
+        new Result('确认收货失败').fail(res)
     }
 })
 

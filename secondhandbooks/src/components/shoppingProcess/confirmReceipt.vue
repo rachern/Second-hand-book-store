@@ -76,10 +76,16 @@ export default {
     },
     methods: {
         confirmReceipt() {
-
+            // 确认收货，修改订单状态
+            this.$store.dispatch('order/confirmReceipt', this.$route.params.id).then(res => {
+                this.$message.success('确认收货成功')
+                // 跳转到评价页面
+                this.$router.push({path: `/ShoppingProcess/evaluate/${this.$route.params.id}`})
+            })
         },
         cancel() {
-            
+            // 取消跳转到个人中心页面
+            this.$router.push({path:'/PersonalCenter'})
         }
     },
     created() {
