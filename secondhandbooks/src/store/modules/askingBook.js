@@ -1,7 +1,9 @@
 import {getAskingBooks, 
         postAskingBook, 
         getFirstThreeBooks, 
-        getMyAskingBooks} from '@/api/askingBook'
+        getMyAskingBooks,
+        complete,
+        cancel} from '@/api/askingBook'
 
 const state = {
     askingBooks: [],
@@ -60,6 +62,24 @@ const actions = {
                 const { data } = res.data
                 commit('SET_MYASKINGBOOKS', data)
                 resolve(res.data.data)
+            })
+        })
+    },
+
+    //完成征书
+    complete({ commit }, id) {
+        return new Promise((resolve, reject) => {
+            complete(id).then(res => {
+                resolve(res)
+            })
+        })
+    },
+
+    //取消征书
+    cancel({ commit }, id) {
+        return new Promise((resolve, reject) => {
+            cancel(id).then(res => {
+                resolve(res)
             })
         })
     }

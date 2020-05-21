@@ -7,9 +7,9 @@
                 <el-menu-item index="pay">待付款</el-menu-item>
                 <el-menu-item index="receive">待收货</el-menu-item>
                 <el-menu-item index="evaluation">待评价</el-menu-item>
-                <el-menu-item index="after_sales">退换/售后</el-menu-item>
+                <el-menu-item index="after_sales">已完成</el-menu-item>
             </el-menu>
-            <div class="nothing" v-if="!hasOrders">
+            <div class="nothing" v-if="orderList.length === 0">
                 <i class="iconfont icon-ganga"></i>
                 {{tip}}
             </div>
@@ -23,29 +23,36 @@
                 </div>
                 <div class="cart-list">
                     <!-- <shopping-item v-for="i in num" :key="i"></shopping-item> -->
-                    <div class="order-item" v-for="i in 5" :key="i">
+                    <div class="order-item" v-for="(order, i) in orderList" :key="i">
                         <div class="item-head">
-                            <span class="date">2020-03-23</span>
-                            <span class="orderId">订单号： 115765777132</span>
+                            <span class="date">{{order.createdTime}}</span>
+                            <span class="orderId">订单号： {{order._id}}</span>
                         </div>
                         <div class="item-body">
                             <div class="column order_detail">
                                 <div class="order_msg">
                                     <el-image
                                         style="width: 70px; height: 70px"
-                                        :src="url"
+                                        :src="order.booksList.linked_cartList[0].url"
+                                        :title="order.booksList.linked_cartList[0].title"
                                         fit="contain"></el-image>
-                                    <div class="order_title">数据库预算法</div>
+                                    <div class="order_title">{{order.booksList.linked_cartList[0].title}}</div>
                                 </div>
-                                <div class="num">x 2</div>
+                                <div class="num">x {{order.booksList.cartList[0].num}}</div>
                             </div>
-                            <div class="column consignee">小明</div>
-                            <div class="column price">总额 ￥372.00</div>
-                            <div class="column state">已完成</div>
-                            <div class="column operation">
-                                <span class="pointer">评价</span><br> 
-                                <span class="pointer">订单详情</span><br> 
-                                <span class="pointer">申请售后</span> 
+                            <div class="column consignee">{{order.user.username}}</div>
+                            <div class="column price">总额 ￥{{order.sum}}</div>
+                            <div class="column state">
+                                {{order.state === 0 ? 
+                                    '待付款' : (order.state === 1 ?
+                                    '待收货' : (order.state === 2 ? 
+                                    '待评价' : '已完成'))}}
+                            </div>
+                            <div class="column operations">
+                                <span class="pointer" v-if="order.state === 0" @click="toPay(order._id)">去付款</span><br v-if="order.state === 0">
+                                <span class="pointer" v-if="order.state === 1" @click="toConfirm(order._id)">确认收货</span><br v-if="order.state === 1">
+                                <span class="pointer" v-if="order.state === 2" @click="toComment(order._id)">去评价</span><br v-if="order.state === 2"> 
+                                <span class="pointer" @click="orderDetail(order._id)">订单详情</span>
                             </div>
                         </div>
                     </div>
@@ -57,7 +64,9 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import pagination from '@/components/classification/classification_pagination'
+
 export default {
     components: {
         pagination
@@ -71,9 +80,26 @@ export default {
             pageSize: 5
         };
     },
+    computed: {
+        ...mapGetters([
+            'orderList'
+        ])
+    },
     methods: {
         handleSelect(key) {
             this.$router.push({ path: `/PersonalCenter/order/${key}` })
+        },
+        toPay(id) {
+            this.$router.push({ path: `/ShoppingProcess/payment/${id}` })
+        },
+        toConfirm(id) {
+            this.$router.push({ path: `/ShoppingProcess/confirmReceipt/${id}` })
+        },
+        toComment(id) {
+            this.$router.push({path: `/ShoppingProcess/evaluate/${id}`})
+        },
+        orderDetail(id) {
+            this.$router.push({ path: `/PersonalCenter/orderDetail/${id}` })
         }
     },
     watch: {
@@ -83,18 +109,23 @@ export default {
                 this.activeIndex = type
                 switch(type) {
                     case 'pay':
+                        this.$store.dispatch('order/getMyOrdersByType', {type: 0, limit: this.pageSize})
                         this.tip = '没有待付款的订单哦~'
                         break;
                     case 'receive':
+                        this.$store.dispatch('order/getMyOrdersByType', {type: 1, limit: this.pageSize})
                         this.tip = '没有待收货的订单哦~'
                         break;
                     case 'evaluation':
+                        this.$store.dispatch('order/getMyOrdersByType', {type: 2, limit: this.pageSize})
                         this.tip = '没有待评价的订单哦~'
                         break;
                     case 'after_sales':
-                        this.tip = '没有退换/售后的订单哦~'
+                        this.$store.dispatch('order/getMyOrdersByType', {type: 3, limit: this.pageSize})
+                        this.tip = '没有已完成的订单哦~'
                         break;
                     default:
+                        this.$store.dispatch('order/getMyOrders', {limit: this.pageSize})
                         this.tip = '您还没有下过订单哦~'
                         break;
                 }

@@ -2,7 +2,15 @@ const express = require('express')
 const mongoose = require('mongoose')
 
 const Result = require('../utils/Result')
-const { placeOrder, deleteOrder, getOrderById, paid, confirmReceipt, evaluate } = require('../service/order')
+const { placeOrder, 
+        deleteOrder, 
+        getOrderById, 
+        paid, 
+        confirmReceipt, 
+        evaluate,
+        getMyOrders,
+        getMyOrdersByType,
+        getMyOrderCountByType } = require('../service/order')
 const { getMyCartList, updateCartList } = require('../service/user')
 const { getBookDetail, updateBooksNum } = require('../service/book')
 const { addComments } = require('../service/comment')
@@ -41,18 +49,18 @@ router.post('/placeOrder', async (req, res) => {
             })
 
             // 如果15分钟未付款，自动取消订单
-            // setTimeout(async () => {
-            //     const order = await getOrderById(place_order_result._id)
-            //     // console.log(order)
-            //     if(order.state == 0) {
-            //         const { cartList } = order.booksList
-            //         cartList.forEach(async (element, i) => {
-            //             const book = await getBookDetail(element.id)
-            //             await updateBooksNum(element.id, book.number - element.num)
-            //         })
-            //         await deleteOrder(place_order_result._id)
-            //     }
-            // }, 15 * 60 * 1000)
+            setTimeout(async () => {
+                const order = await getOrderById(place_order_result._id)
+                // console.log(order)
+                if(order.state == 0) {
+                    const { cartList } = order.booksList
+                    cartList.forEach(async (element, i) => {
+                        const book = await getBookDetail(element.id)
+                        await updateBooksNum(element.id, book.number - element.num)
+                    })
+                    await deleteOrder(place_order_result._id)
+                }
+            }, 15 * 60 * 1000)
             new Result(place_order_result._id, '订单提交成功').success(res)
         } else {
             new Result('订单提交失败').fail(res)
@@ -111,6 +119,49 @@ router.post('/evaluate', async (req, res) => {
             new Result('发表评价失败').fail(res)
         }
     }
+})
+
+// 获取订单
+router.get('/getMyOrders', async (req, res) => {
+    const {limit, skip} = req.query
+    const decode = decoded(req)
+    if(decode && decode._id) {
+        const myOrders = await getMyOrders(decode._id, limit, skip)
+        if(myOrders) {
+            new Result(myOrders,'获取成功').success(res)
+        } else {
+            new Result('获取失败').fail(res)
+        }
+    }
+})
+
+// 根据订单类型获取订单
+router.get('/getMyOrdersByType', async (req, res) => {
+    const { type, limit, skip } = req.query
+    const decode = decoded(req)
+    if(decode && decode._id) {
+        const myOrders = await getMyOrdersByType(decode._id, type, limit, skip)
+        if(myOrders) {
+            new Result(myOrders, '获取成功').success(res)
+        } else {
+            new Result('获取失败').fail(res)
+        }
+    }
+})
+
+// 根据订单类型获取订单数量
+router.get('/getMyOrderCountByType', async (req, res) => {
+    const { type } = req.query
+    const decode = decoded(req)
+    if(decode && decode._id) {
+        const myOrderCount = await getMyOrderCountByType(decode._id, type)
+        if(myOrderCount) {
+            new Result(myOrderCount, '获取成功').success(res)
+        } else {
+            new Result('获取失败').fail(res)
+        }
+    }
+
 })
 
 module.exports = router

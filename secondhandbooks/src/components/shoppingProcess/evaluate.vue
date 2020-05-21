@@ -98,6 +98,7 @@ export default {
                     border-right: 1px solid rgb(190, 189, 189);
                     width: 300px;
                     height: 200px;
+                    padding: 0 10px;
                     .img{
                         width: 140px;
                         height: 140px;

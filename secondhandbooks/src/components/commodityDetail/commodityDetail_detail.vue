@@ -24,7 +24,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
     .detail{
         // height: 1000px;
         // border: 3px solid black;

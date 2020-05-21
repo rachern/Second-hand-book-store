@@ -17,6 +17,7 @@ import { getAskingBookCount, getMyAskingBooksCount } from '@/api/askingBook'
 import { getCommentCount } from '@/api/comment'
 import { getClassificationBooksCount, getMyPublishBooksCount, getPostBookReviewCount } from '@/api/book'
 import { getMyCollectionBooksCount } from '@/api/user'
+import { getMyOrderCountByType } from '@/api/order'
 
 export default {
     props: ['pageSize','total'],
@@ -67,9 +68,42 @@ export default {
                         const { data } =res.data
                         this.count = data
                     })
-                }
-                else if(name === 'order') {
-                    
+                } else if(name === 'order') {
+                    const type = this.$route.params.type
+                    switch(type) {
+                        case 'all':
+                            getMyOrderCountByType().then(res => {
+                                const { data } =res.data
+                                this.count = data
+                            })
+                            break;
+                        case 'pay':
+                            getMyOrderCountByType(0).then(res => {
+                                const { data } =res.data
+                                this.count = data
+                            })
+                            break;
+                        case 'receive':
+                            getMyOrderCountByType(1).then(res => {
+                                const { data } =res.data
+                                this.count = data
+                            })
+                            break;
+                        case 'evaluation':
+                            getMyOrderCountByType(2).then(res => {
+                                const { data } =res.data
+                                this.count = data
+                            })
+                            break;
+                        case 'after_sales':
+                            getMyOrderCountByType(3).then(res => {
+                                const { data } =res.data
+                                this.count = data
+                            })
+                            break;
+                        default:
+                            break;
+                    }
                 }
             },
             immediate: true
@@ -98,6 +132,27 @@ export default {
             } else if(name === 'postBookReview') {
                 this.$store.dispatch('book/getPostBookReviewList', {limit: this.pageSize, skip: (val-1)*this.pageSize })
                 document.querySelector('#post-book-review-list-title').scrollIntoView()
+            } else if(name === 'order') {
+                const type = this.$route.params.type
+                switch(type) {
+                    case 'all':
+                        this.$store.dispatch('order/getMyOrders', {limit: this.pageSize, skip: (val-1)*this.pageSize})
+                        break;
+                    case 'pay':
+                        this.$store.dispatch('order/getMyOrdersByType', {type: 0, limit: this.pageSize, skip: (val-1)*this.pageSize})
+                        break;
+                    case 'receive':
+                        this.$store.dispatch('order/getMyOrdersByType', {type: 1, limit: this.pageSize, skip: (val-1)*this.pageSize})
+                        break;
+                    case 'evaluation':
+                        this.$store.dispatch('order/getMyOrdersByType', {type: 2, limit: this.pageSize, skip: (val-1)*this.pageSize})
+                        break;
+                    case 'after_sales':
+                        this.$store.dispatch('order/getMyOrdersByType', {type: 3, limit: this.pageSize, skip: (val-1)*this.pageSize})
+                        break;
+                    default:
+                        break;
+                }
             }
             else {
                 this.$store.dispatch('book/getClassificationBooks', { id, limit: this.pageSize, skip: (val-1)*this.pageSize })

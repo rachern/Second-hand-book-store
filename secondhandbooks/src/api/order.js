@@ -44,3 +44,30 @@ export function evaluate(obj) {
         data: obj
     })
 }
+
+// 获取订单
+export function getMyOrders(limit, skip) {
+    return new request({
+        url: '/order/getMyOrders',
+        method: 'get',
+        params: { limit, skip }
+    })
+}
+
+// 根据订单类型获取用户订单
+export function getMyOrdersByType(type, limit, skip) {
+    return new request({
+        url: '/order/getMyOrdersByType',
+        method: 'get',
+        params: { type, limit, skip }
+    })
+}
+
+// 根据订单类型获取订单数量
+export function getMyOrderCountByType(type) {
+    return new request({
+        url: '/order/getMyOrderCountByType',
+        method: 'get',
+        params: { type }
+    })
+}

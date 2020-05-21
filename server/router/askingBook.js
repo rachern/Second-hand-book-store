@@ -6,7 +6,9 @@ const { getAskingBookCount,
         postAskingBook, 
         getFirstThreeBooks,
         getMyAskingBooksCount,
-        getMyAskingBooks } = require('../service/askingBook')
+        getMyAskingBooks,
+        complete,
+        cancel } = require('../service/askingBook')
 const { decoded } = require('../utils')
 
 const router = express.Router()
@@ -67,6 +69,28 @@ router.get('/getMyAskingBooks', async (req, res) => {
         const { limit, skip } = req.query
         const myAskingBooks = await getMyAskingBooks(decode._id, limit, skip)
         new Result(myAskingBooks, '查询成功').success(res)
+    }
+})
+
+//完成征书
+router.post('/complete', async (req, res) => {
+    const { id } = req.body
+    const result = await complete(id)
+    if(result) {
+        new Result('完成征书成功').success(res)
+    } else {
+        new Result('完成征书失败').fail(res)
+    }
+})
+
+//取消征书
+router.post('/cancel', async (req, res) => {
+    const { id } = req.body
+    const result = await cancel(id)
+    if(result) {
+        new Result('取消征书成功').success(res)
+    } else {
+        new Result('取消征书失败').fail(res)
     }
 })
 

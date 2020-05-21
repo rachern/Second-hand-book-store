@@ -33,11 +33,33 @@ function evaluate(id) {
     return Order.findByIdAndUpdate(id, {state: 3}, {new: true})
 }
 
+// 获取订单
+function getMyOrders(id, limit, skip) {
+    return Order.find({user: id, state: {$ne: 4}}).sort({_id: -1}).skip(parseInt(skip)).limit(parseInt(limit))
+}
+
+// 根据订单状态获取用户订单
+function getMyOrdersByType(id, type, limit, skip) {
+    return Order.find({user: id, state: parseInt(type)}).populate('address').populate('user').sort({_id: -1}).skip(parseInt(skip)).limit(parseInt(limit))
+}
+
+// 根据订单状态获取用户订单数量
+function getMyOrderCountByType(id, type) {
+    if(type == undefined) {
+        return Order.find({user: id}).countDocuments()
+    } else {
+        return Order.find({user: id, state: parseInt(type)}).countDocuments()
+    }
+}
+
 module.exports = {
     placeOrder,
     deleteOrder,
     getOrderById,
     paid,
     confirmReceipt,
-    evaluate
+    evaluate,
+    getMyOrders,
+    getMyOrdersByType,
+    getMyOrderCountByType
 }

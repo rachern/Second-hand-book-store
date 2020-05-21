@@ -48,11 +48,23 @@ function getMyAskingBooks(id, limit, skip) {
                      .limit(parseInt(limit))
 }
 
+//完成征书
+function complete(id) {
+    return AskingBook.findByIdAndUpdate(id, {state: 1}, {new: true})
+}
+
+//取消征书
+function cancel(id) {
+    return AskingBook.findByIdAndUpdate(id, {state: 2}, {new: true})
+}
+
 module.exports = {
     getAskingBookCount,
     getAskingBooks,
     postAskingBook,
     getFirstThreeBooks,
     getMyAskingBooksCount,
-    getMyAskingBooks
+    getMyAskingBooks,
+    complete,
+    cancel
 }

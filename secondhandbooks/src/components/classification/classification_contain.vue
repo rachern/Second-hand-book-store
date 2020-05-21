@@ -45,6 +45,7 @@ export default {
         background-color: rgba(255,255,255,.8);
         .classification-contain-inner{
             width: 90vw;
+            min-width: 1170px;
             margin: 0 auto;
             .crumbs-nav{
                 text-align: left;

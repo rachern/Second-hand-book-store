@@ -50,3 +50,21 @@ export function getMyAskingBooks(limit, skip) {
         params: { limit, skip }
     })
 }
+
+//完成征书
+export function complete(id) {
+    return request({
+        url: '/askingBook/complete',
+        method: 'post',
+        data: { id }
+    })
+}
+
+// 取消征书
+export function cancel(id) {
+    return request({
+        url: '/askingBook/cancel',
+        method: 'post',
+        data: { id }
+    })
+}

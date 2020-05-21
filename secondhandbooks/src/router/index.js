@@ -95,6 +95,13 @@ const routes = [
         meta: {name: 'order',title: '我的订单'}
       },
       {
+        // 订单详情
+        path: 'orderDetail/:id',
+        name: 'orderDetail',
+        component: () => import('../components/personalCenter/home/orderDetail'),
+        meta: {name: 'orderDetail', title: '订单详情'}
+      },
+      {
         //我的发布
         path: 'myPublish',
         name: 'myPublish',

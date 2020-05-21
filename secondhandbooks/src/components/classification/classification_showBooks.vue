@@ -25,5 +25,6 @@ export default {
         border: 1px solid rgb(223, 220, 220);
         margin-top: 2vh;
         text-align: left;
+        min-height: 473px;
     }
 </style>

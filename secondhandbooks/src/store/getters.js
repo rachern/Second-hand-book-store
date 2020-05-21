@@ -24,6 +24,7 @@ const getters = {
     askingBooks: state => state.askingBook.askingBooks,
     myAskingBooks: state => state.askingBook.myAskingBooks,
     addressList: state => state.address.addressList,
+    orderList: state => state.order.orderList
     // roles: state => state.role.roles
 }
 

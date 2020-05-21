@@ -212,7 +212,12 @@ const actions = {
             getMyCartList().then(res => {
                 const { data } = res.data
                 commit('SET_MYCARTLIST', data[0])
-                resolve(res.data.data[0])
+                console.log(res)
+                if(res.data.data[0]) {
+                    resolve(res.data.data[0])
+                } else {
+                    resolve({})
+                }
             })
         })
     },

@@ -23,8 +23,8 @@
                             发布时间：{{askingBook.createdTime}}
                             <span class="operate" v-if="askingBook.state === 0">
                                 操作：
-                                <el-button type="success" size="mini">完成</el-button>
-                                <el-button type="danger" size="mini">取消</el-button>
+                                <el-button type="success" size="mini" @click="complete(askingBook._id)">完成</el-button>
+                                <el-button type="danger" size="mini" @click="cancel(askingBook._id)">取消</el-button>
                             </span>
                         </div>
                     </ul>
@@ -47,6 +47,18 @@ export default {
         return {
             pageSize: 15,
             activeName: ''
+        }
+    },
+    methods: {
+        complete(id) {
+            this.$store.dispatch('askingBook/complete', id).then(res => {
+                location.reload()
+            })
+        },
+        cancel(id) {
+            this.$store.dispatch('askingBook/cancel', id).then(res => {
+                location.reload()
+            })
         }
     },
     computed: {

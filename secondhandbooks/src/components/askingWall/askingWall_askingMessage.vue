@@ -12,7 +12,7 @@
                         <li :title="askingBook.author">作者：{{askingBook.author}}</li>
                         <li :title="askingBook.askingPerson.username">
                             发布人：{{askingBook.askingPerson.username}}
-                            <el-button type="danger" icon="el-icon-chat-dot-round" size="mini">联系买家</el-button>
+                            <el-button type="danger" icon="el-icon-chat-dot-round" size="mini" @click="contactBuyer(askingBook.askingPerson.username, askingBook.askingPerson.url)">联系买家</el-button>
                         </li>
                         <div class="pic-wrap">
                             图片：
@@ -43,6 +43,18 @@ export default {
         ...mapGetters([
             'askingBooks'
         ])
+    },
+    methods: {
+        contactBuyer(name, avatar) {
+            this.$socket.emit('contactSeller', {
+                username: this.$store.getters.username,
+                toUser: JSON.stringify({username:name,
+                        avatar:avatar})
+            })
+            this.$router.push({ path: '/PersonalCenter/message/interactiveMessage',
+                                query: { toUser: JSON.stringify({username:name,
+                        avatar:avatar})} })
+        }
     },
     created() {
         this.$store.dispatch('askingBook/getAskingBooks',{ limit: this.pageSize })

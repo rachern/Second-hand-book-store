@@ -1,0 +1,276 @@
+<template>
+    <div class="orderDetail">
+        <div class="order-status">
+            <div class="status">
+                当前订单状态：{{orderDetail.state === 0 ? '待付款' : 
+                                (orderDetail.state === 1 ? '待收货' : 
+                                (orderDetail.state === 2 ? '待评价' : '已完成'))}}
+                <span class="pointer confirm" @click="confirmReceipt" v-if="orderDetail.state === 1">确认收货</span>
+                <span class="pointer payment" @click="payment" v-if="orderDetail.state === 0">去付款</span>
+                <span class="pointer comment" @click="comment" v-if="orderDetail.state === 2">去评价</span>
+            </div>
+        </div>
+        <div class="order-detail">
+            <div class="title">订单信息</div>
+            <div class="order-message">
+                <div class="personalInformation">
+                    <div class="address">
+                        <span class="label">收货地址：</span>
+                        {{orderDetail.address.name}}，{{orderDetail.address.phone}}，
+                        {{orderDetail.address.province.value+orderDetail.address.city.value+orderDetail.address.area.value+orderDetail.address.town.value+orderDetail.address.address}}
+                    </div>
+                    <div class="shipping-method">
+                        <span class="label">运送方式：</span>
+                        快递
+                    </div>
+                </div>
+                <div class="message">
+                    <span class="label">订单信息：</span>
+                    <div class="message-detail">
+                        <span class="detail orderId">订单编号：{{orderDetail._id}}</span>
+                        <span class="detail createdTime">创建时间：{{orderDetail.createdTime}}</span>
+                        <span class="detail paymentTime" v-if="orderDetail.paymentTime">付款时间：{{orderDetail.paymentTime}}</span>
+                        <span class="detail closingTime" v-if="orderDetail.closingTime">成交时间：{{orderDetail.closingTime}}</span>
+                    </div>
+                    <div class="booksList">
+                        <div class="cart-thead">
+                            <div class="column goods">商品</div>
+                            <div class="column bookstatus">状态</div>
+                            <div class="column price">单价</div>
+                            <div class="column number">数量</div>
+                        </div>
+                        <div class="shopping-item" 
+                            v-for="(book, i) in orderDetail.booksList.linked_cartList"
+                            :key="i">
+                            <div class="cell goods">
+                                <div class="goods-item">
+                                    <div class="img">
+                                        <img :src="book.url" :alt="book.title" :title="book.title"/>
+                                    </div>
+                                    <div class="book-title">{{book.title}}</div>
+                                </div>
+                            </div>
+                            <div class="cell bookstatus">
+                                {{orderDetail.state === 0 ? '待付款' : 
+                                (orderDetail.state === 1 ? '待收货' : 
+                                (orderDetail.state === 2 ? '待评价' : '已完成'))}}
+                            </div>
+                            <div class="cell price">￥{{book.presentPrice.toFixed(2)}}</div>
+                            <div class="cell number">{{ orderDetail.booksList.cartList[i].num }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sum">
+                    <span class="label">实付款：</span>
+                    <span class="sum-num">￥{{orderDetail.sum}}</span> 元
+                </div>
+            </div>
+        </div>
+        <div class="btn">
+            <el-button type="primary" size="small" @click="cancel" v-if="orderDetail.state === 1">取消</el-button>
+            <el-button type="primary" size="small" @click="back" v-else>返回</el-button>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            orderDetail: {},
+            sum: 0
+        }
+    },
+    methods: {
+        confirmReceipt() {
+            // 确认收货，修改订单状态
+            this.$store.dispatch('order/confirmReceipt', this.$route.params.id).then(res => {
+                this.$message.success('确认收货成功')
+                // 跳转到评价页面
+                this.$router.push({path: `/ShoppingProcess/evaluate/${this.$route.params.id}`})
+            })
+        },
+        payment() {
+            // 跳转到付款页面
+            this.$router.push({ path: `/ShoppingProcess/payment/${this.$route.params.id}` })
+        },
+        comment() {
+            // 跳转到评价页面
+            this.$router.push({ path: `/ShoppingProcess/evaluate/${this.$route.params.id}` })
+        },
+        cancel() {
+            // 取消跳转到个人中心页面
+            this.$router.push({path:'/PersonalCenter'})
+        },
+        back() {
+            // 返回上一页
+            this.$router.go(-1)
+        }
+    },
+    created() {
+        const id = this.$route.params.id
+        this.$store.dispatch('order/getOrderById', id).then(res => {
+            this.orderDetail = res
+        })
+    }
+}
+</script>
+
+<style lang="scss">
+    .orderDetail{
+        margin: 20px auto;
+        width: 70vw;
+        min-width: 910px;
+        min-height: 462px;
+        background-color: #fff;
+        padding: 10px 0;
+        .order-status{
+            margin: 0 auto;
+            width: 80%;
+            box-shadow: 0 0 3px 3px rgba(235, 137, 14, 0.6);
+            background-color: rgba(250, 233, 212, 0.6);
+            height: 60px;
+            .status{
+                line-height: 60px;
+                text-align: left;
+                padding-left: 40px;
+                font-weight: 700;
+                .confirm, .payment, .comment{
+                    font-weight: normal;
+                    margin-left: 20px;
+                    font-size: 14px;
+                }
+            }
+        }
+        .order-detail{
+            text-align: left;
+            width: 80%;
+            margin: 0 auto;
+            margin-top: 20px;
+            .title{
+                font-weight: 600;
+            }
+            .order-message{
+                // height: 100px;
+                box-shadow: 0 0 3px 3px rgba(0,0,0,.4);
+                margin-top: 10px;
+                padding: 20px;
+                font-size: 14px;
+                .label{
+                    font-weight: 700;
+                    margin-right: 20px;
+                }
+                .personalInformation{
+                    border-bottom: 1px solid #aaa;
+                    .address{
+                        margin-bottom: 8px;
+                    }
+                    .shipping-method{
+                        margin-bottom: 10px
+                    }
+                }
+                .message{
+                    margin-top: 10px;
+                    border-bottom: 1px solid #aaa;
+                    .message-detail{
+                        vertical-align: top;
+                        display: inline-block;
+                        width: 85%;
+                        .detail{
+                            display: inline-block;
+                            width: 50%;
+                            margin-bottom: 5px;
+                        }
+                    }
+                    .booksList{
+                        margin-top: 10px;
+                        margin-bottom: 20px;
+                        text-align: center;
+                        .cart-thead{
+                            height: 43px;
+                            line-height: 43px;
+                            padding: 5px 0;
+                            background-color: #f3f3f3;
+                            border: 1px solid #e9e9e9;
+                            font-size: 14px;
+                            display: flex;
+                            .column{
+                                line-height: 32px;
+                            }
+                            .goods{
+                                flex: 1;
+                            }
+                            .bookstatus{
+                                width: 120px;
+                            }
+                            .price{
+                                width: 120px;
+                            }
+                            .number{
+                                width: 120px;
+                            }
+                        }
+                        .shopping-item{
+                            display: flex;
+                            font-size: 14px;
+                            border-bottom: 1px solid #cfcece;
+                            border-left: 1px solid #cfcece;
+                            border-right: 1px solid #cfcece;
+                            .cell{
+                                padding: 20px 0 15px 0;
+                            }
+                            .goods{
+                                flex: 1;
+                                .goods-item{
+                                    display: flex;
+                                    .img{
+                                        float: left;
+                                        width: 80px;
+                                        height: 80px;
+                                        border: 1px solid #eee;
+                                        margin-right: 10px;
+                                        background-color: #fff;
+                                        overflow: hidden;
+                                        img{
+                                            height: 100%;
+                                        }
+                                    }
+                                    .book-title{
+                                        flex: 1;
+                                        text-align: left;
+                                        font-size: 16px;
+                                    }
+                                }
+                            }
+                            .bookstatus{
+                                width: 120px;
+                            }
+                            .price{
+                                width: 120px;
+                                color: #E2231A;
+                            }
+                            .number{
+                                width: 120px;
+                            }
+                        }
+                    }
+                }
+                .sum{
+                    margin-top: 20px;
+                    text-align: right;
+                    .sum-num{
+                        font-size: 24px;
+                        font-weight: 700;
+                        color: tomato;
+                    }
+                }
+            }
+        }
+        .btn{
+            width: 80%;
+            margin: 0 auto;
+            margin-top: 10px;
+            text-align: right;
+        }
+    }
+</style>

@@ -12,31 +12,32 @@
                         <i class="iconfont icon-gouwuche"></i>
                         您的购物车都空空的，快去挑选合适的商品吧！
                     </div>
-                    <el-table :data="cartList"
-                              style="width: 100%"
-                              :show-header="false"
-                              v-else>
-                        <el-table-column width="70">
-                            <template slot-scope="scope">
-                                <el-image
-                                    style="width: 60px; height: 60px"
-                                    :src="scope.row.url"
-                                    fit="contain"></el-image>
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="title">
-                        </el-table-column>
-                        <el-table-column width="120">
-                            <template slot-scope="scope">
-                                <el-button
-                                    @click.native.prevent="checkDetail(scope.$index, cartList)"
-                                    type="text"
-                                    size="small">
-                                    查看详情
-                                </el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
+                    <div class="cart-list" v-else>
+                        <el-table :data="cartList"
+                                style="width: 100%"
+                                :show-header="false">
+                            <el-table-column width="70">
+                                <template slot-scope="scope">
+                                    <el-image
+                                        style="width: 60px; height: 60px"
+                                        :src="scope.row.url"
+                                        fit="contain"></el-image>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="title">
+                            </el-table-column>
+                            <el-table-column width="120">
+                                <template slot-scope="scope">
+                                    <el-button
+                                        @click.native.prevent="checkBookDetail(scope.$index, cartList)"
+                                        type="text"
+                                        size="small">
+                                        查看详情
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
                 </el-card>
             </div>
             <!-- 我的订单 -->
@@ -46,6 +47,11 @@
                         <span>我的订单</span>
                     </div>
                     <ul class="order-icon clearfix">
+                        <li class="all_orders">
+                            <div class="pointer" @click="order('all')">
+                                <i class="iconfont icon-x"></i><br>全部订单
+                            </div>
+                        </li>
                         <li class="waiting_for_paying">
                             <div class="pointer" @click="order('pay')">
                                 <i class="iconfont icon-daifukuan"></i><br>待付款
@@ -63,40 +69,43 @@
                         </li>
                         <li class="after_sales">
                             <div class="pointer" @click="order('after_sales')">
-                                <i class="iconfont icon-shouhouwuyou"></i><br>退换/售后  
-                            </div>
-                        </li>
-                        <li class="all_orders">
-                            <div class="pointer" @click="order('all')">
-                                <i class="iconfont icon-x"></i><br>全部订单
+                                <i class="iconfont icon-shouhouwuyou"></i><br>已完成  
                             </div>
                         </li>
                     </ul>
-                    <div class="nothing" v-if="!hasOrders">
+                    <div class="nothing" v-if="orderList.length === 0">
                         <i class="iconfont icon-gouwuche"></i>
                         您买的东西太少了，这里都空空的，快去挑选合适的商品吧！
                     </div>
                     <div class="order-list" v-else>
-                        <el-table :data="orders"
+                        <el-table :data="orderList"
                                   style="width: 100%"
                                   :show-header="false">
                             <el-table-column width="70">
                                 <template slot-scope="scope">
                                     <el-image
                                         style="width: 60px; height: 60px"
-                                        :src="scope.row.url"
+                                        :src="scope.row.booksList.linked_cartList[0].url"
                                         fit="contain"></el-image>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="title">
+                            <el-table-column>
+                                <template slot-scope="scope">
+                                    {{scope.row.booksList.linked_cartList[0].title}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="orderState" width="70">
                             </el-table-column>
                             <el-table-column width="120">
                                 <template slot-scope="scope">
                                     <el-button
-                                        @click.native.prevent="checkDetail(scope.$index, orders)"
+                                        @click.native.prevent="checkOrderDetail(scope.$index, orderList)"
                                         type="text"
                                         size="small">
-                                        查看详情
+                                        {{scope.row.state === 0 ? 
+                                            '去付款' : (scope.row.state === 1 ?
+                                            '去收货' : (scope.row.state === 2 ? 
+                                            '去评价' : '查看详情'))}}
                                     </el-button>
                                 </template>
                             </el-table-column>
@@ -190,27 +199,43 @@
 export default {
     data() {
         return {
-            orders: [
-                {url:require('../../../assets/img/Computer_and_network/Database/book1.jpg'),
-                title:"数据库与算法"},
-                {url:require('../../../assets/img/Computer_and_network/Database/book1.jpg'),
-                title:"数据库与算法"},
-                {url:require('../../../assets/img/Computer_and_network/Database/book1.jpg'),
-                title:"数据库与算法"},
-            ],
             url: require('../../../assets/img/Computer_and_network/Database/book1.jpg'),
             hasOrders: true,
             latestAsking: [],
             latestBooks: [],
             latestCollections: [],
-            cartList: []
+            cartList: [],
+            orderList: []
         }
     },
     methods: {
-        checkDetail(index, rows) { 
+        checkBookDetail(index, rows) { 
             // /CommodityDetail/5e82e55178552e24f8784eea
             this.$router.push({ path: `/CommodityDetail/${rows[index]._id}` })
             // console.log(index, rows)
+        },
+        checkOrderDetail(index, rows) {
+            console.log(index, rows)
+            switch(rows[index].state) {
+                case 0:
+                    // 去支付
+                    this.$router.push({ path: `/ShoppingProcess/payment/${rows[index]._id}` })
+                    break;
+                case 1: 
+                    // 去收货
+                    this.$router.push({ path: `/ShoppingProcess/confirmReceipt/${rows[index]._id}` })
+                    break;
+                case 2:
+                    // 去评价
+                    this.$router.push({ path: `/ShoppingProcess/evaluate/${rows[index]._id}` })
+                    break;
+                case 3:
+                    // 查看详情
+                    this.$router.push({ path: `/PersonalCenter/orderDetail/${rows[index]._id}` })
+                    break;
+                default:
+                    break;
+            }
         },
         shoppingCart() {
             this.$router.push({ path: '/ShoppingCart' })
@@ -239,7 +264,33 @@ export default {
             this.latestCollections = res.latestCollections
         })
         this.$store.dispatch('user/getMyCartList').then(res => {
-            this.cartList = res.linked_cartList.reverse().slice(0,3)
+            if(JSON.stringify(res) != '{}') {
+                this.cartList = res.linked_cartList.reverse().slice(0,3)
+            }
+        })
+        this.$store.dispatch('order/getMyOrders', {limit: 5}).then(res => {
+            if(res.length > 0) {
+                res.forEach((e, i) => {
+                    switch(e.state) {
+                        case 0:
+                            e.orderState = '待付款'
+                            break;
+                        case 1: 
+                            e.orderState = '待收货'
+                            break;
+                        case 2:
+                            e.orderState = '待评价'
+                            break;
+                        case 3:
+                            e.orderState = '已完成'
+                            break;
+                        default:
+                            break;
+                    }
+                    this.orderList.push(e)
+                })
+                this.orderList = this.orderList.slice(0, 3)
+            }
         })
     }
 }
@@ -265,8 +316,14 @@ export default {
             min-width: 710px;
             .myShoppingCart{
                 margin-bottom: 20px;
+                .cart-list{
+                    min-height: 273.6px;
+                }
             }
             .myOrder{
+                .order-list{
+                    min-height: 273.6px;
+                }
                 .order-icon{
                     font-size: 14px;
                     border-bottom: 1px solid #EBEEF5;

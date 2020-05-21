@@ -1,11 +1,19 @@
-import { placeOrder, paid, getOrderById, confirmReceipt, evaluate } from '@/api/order'
+import { placeOrder, 
+         paid, 
+         getOrderById, 
+         confirmReceipt, 
+         evaluate, 
+         getMyOrders,
+         getMyOrdersByType } from '@/api/order'
 
 const state = {
-
+    orderList: []
 }
 
 const mutations = {
-
+    SET_ORDERLIST: (state, orderList) => {
+        state.orderList = orderList
+    }
 }
 
 const actions = {
@@ -50,6 +58,28 @@ const actions = {
         return new Promise((resolve, reject) => {
             evaluate(comments).then(res => {
                 resolve(res)
+            })
+        })
+    },
+
+    // 获取订单
+    getMyOrders({ commit }, obj) {
+        const { skip = 0, limit } = obj
+        return new Promise((resolve, reject) => {
+            getMyOrders(limit, skip).then(res => {
+                commit('SET_ORDERLIST', res.data.data)
+                resolve(res.data.data)
+            })
+        })
+    },
+
+    // 根据订单类型获取用户订单
+    getMyOrdersByType({ commit }, obj) {
+        const { skip = 0, limit, type } = obj
+        return new Promise((resolve, reject) => {
+            getMyOrdersByType(type, limit, skip).then(res => {
+                commit('SET_ORDERLIST', res.data.data)
+                resolve(res.data.data)
             })
         })
     }
