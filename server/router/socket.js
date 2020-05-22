@@ -64,31 +64,32 @@ module.exports = function(io) {
         // 监听互动消息
         socket.on('send interactiveMessage', async data => {
             // console.log(data)
+            console.log(data)
             const toUsername = data.to.username
             const fromUsername = data.from.username
             const toUser = await getMessages(toUsername)
             const fromUser = await getMessages(fromUsername)
             // console.log(toUser.message.interactiveMessage)
             // console.log(fromUser.message.interactiveMessage)
-            if(toUser.message.interactiveMessage.unread[JSON.stringify(data.from)]) {
-                toUser.message.interactiveMessage.unread[JSON.stringify(data.from)].push({
+            if(toUser.message.interactiveMessage.unread[JSON.stringify(data.from._id)]) {
+                toUser.message.interactiveMessage.unread[JSON.stringify(data.from._id)].push({
                     from: data.from,
                     content: data.content
                 })
             } else {
-                toUser.message.interactiveMessage.unread[JSON.stringify(data.from)] = [{
+                toUser.message.interactiveMessage.unread[JSON.stringify(data.from._id)] = [{
                     from: data.from,
                     content: data.content
                 }]
             }
             
-            if(fromUser.message.interactiveMessage.read[JSON.stringify(data.to)]) {
-                fromUser.message.interactiveMessage.read[JSON.stringify(data.to)].push({
+            if(fromUser.message.interactiveMessage.read[JSON.stringify(data.to._id)]) {
+                fromUser.message.interactiveMessage.read[JSON.stringify(data.to._id)].push({
                     to: data.to,
                     content: data.content
                 })
             } else {
-                fromUser.message.interactiveMessage.read[JSON.stringify(data.to)] = [{
+                fromUser.message.interactiveMessage.read[JSON.stringify(data.to._id)] = [{
                     to: data.to,
                     content: data.content
                 }]
@@ -113,23 +114,22 @@ module.exports = function(io) {
             const message = messages.message
             let newRead = []
             // console.log(message.interactiveMessage.read[other])
-            if(!message.interactiveMessage.read[other]) {
-                message.interactiveMessage.read[other] = []
+            if(!message.interactiveMessage.read[JSON.stringify(other._id)]) {
+                message.interactiveMessage.read[JSON.stringify(other._id)] = []
             }
-            if(message.interactiveMessage.unread[other]) {
-                newRead = message.interactiveMessage.read[other].concat(message.interactiveMessage.unread[other])
+            if(message.interactiveMessage.unread[JSON.stringify(other._id)]) {
+                newRead = message.interactiveMessage.read[JSON.stringify(other._id)].concat(message.interactiveMessage.unread[JSON.stringify(other._id)])
             } else {
-                newRead = message.interactiveMessage.read[other]
+                newRead = message.interactiveMessage.read[JSON.stringify(other._id)]
             }
-            message.interactiveMessage.read[other] = newRead
-            message.interactiveMessage.unread[other] = []
+            message.interactiveMessage.read[JSON.stringify(other._id)] = newRead
+            message.interactiveMessage.unread[JSON.stringify(other._id)] = []
             const newMessage = await hasReadInteractiveMessage(user, message)
             io.sockets.to(users[user]).emit('accept messages', newMessage.message)
         })
 
         // 联系卖家
         socket.on('contactSeller', async data => {
-            console.log(data)
             const { username, toUser } = data
             const messages = await getMessages(username)
             const { message } = messages

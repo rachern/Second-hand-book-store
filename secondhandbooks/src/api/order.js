@@ -71,3 +71,12 @@ export function getMyOrderCountByType(type) {
         params: { type }
     })
 }
+
+// 获取订单记录统计
+export function getOrderRecord(type) {
+    return new request({
+        url: '/order/getOrderRecord',
+        method: 'get',
+        params: { type }
+    })
+}

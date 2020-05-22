@@ -12,7 +12,7 @@
                         <li :title="askingBook.author">作者：{{askingBook.author}}</li>
                         <li :title="askingBook.askingPerson.username">
                             发布人：{{askingBook.askingPerson.username}}
-                            <el-button type="danger" icon="el-icon-chat-dot-round" size="mini" @click="contactBuyer(askingBook.askingPerson.username, askingBook.askingPerson.url)">联系买家</el-button>
+                            <el-button type="danger" icon="el-icon-chat-dot-round" size="mini" @click="contactBuyer(askingBook.askingPerson.username, askingBook.askingPerson.url, askingBook.askingPerson._id)">联系买家</el-button>
                         </li>
                         <div class="pic-wrap">
                             图片：
@@ -45,15 +45,17 @@ export default {
         ])
     },
     methods: {
-        contactBuyer(name, avatar) {
+        contactBuyer(name, avatar, _id) {
             this.$socket.emit('contactSeller', {
                 username: this.$store.getters.username,
                 toUser: JSON.stringify({username:name,
-                        avatar:avatar})
+                        avatar:avatar,
+                        _id:_id})
             })
             this.$router.push({ path: '/PersonalCenter/message/interactiveMessage',
                                 query: { toUser: JSON.stringify({username:name,
-                        avatar:avatar})} })
+                        avatar:avatar,
+                        _id:_id})} })
         }
     },
     created() {

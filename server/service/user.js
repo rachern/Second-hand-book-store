@@ -150,6 +150,11 @@ function hasReadInteractiveMessage(username, message) {
     return User.findOneAndUpdate({ username }, {message}, {new: true})
 }
 
+// 根据用户id获取用户信息
+function getUserById(userList) {
+    return User.find({_id: {$in: userList}}, {url: 1, username: 1})
+}
+
 module.exports = {
     createUser,
     findUser,
@@ -174,5 +179,6 @@ module.exports = {
     pushSystemMessage,
     hasReadSystemMessage,
     pushInteractiveMessage,
-    hasReadInteractiveMessage
+    hasReadInteractiveMessage,
+    getUserById
 }

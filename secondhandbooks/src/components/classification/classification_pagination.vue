@@ -2,6 +2,7 @@
     <div class="pagination">
         <el-pagination
             background
+            :hide-on-single-page="true"
             :page-size="pageSize"
             layout="prev, pager, next, jumper"
             :total="total || count"

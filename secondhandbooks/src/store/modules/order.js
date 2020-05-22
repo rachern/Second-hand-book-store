@@ -4,7 +4,8 @@ import { placeOrder,
          confirmReceipt, 
          evaluate, 
          getMyOrders,
-         getMyOrdersByType } from '@/api/order'
+         getMyOrdersByType,
+         getOrderRecord } from '@/api/order'
 
 const state = {
     orderList: []
@@ -79,6 +80,15 @@ const actions = {
         return new Promise((resolve, reject) => {
             getMyOrdersByType(type, limit, skip).then(res => {
                 commit('SET_ORDERLIST', res.data.data)
+                resolve(res.data.data)
+            })
+        })
+    },
+
+    // 获取订单记录
+    getOrderRecord({ commit }, type) {
+        return new Promise((resolve, reject) => {
+            getOrderRecord(type).then(res => {
                 resolve(res.data.data)
             })
         })

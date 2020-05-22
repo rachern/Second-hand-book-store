@@ -6,14 +6,14 @@
                 class="el-menu-vertical-demo"
                 @select="handleSelect">
                 <el-menu-item
-                    v-for="value in userList"
-                    :key="value"
-                    :index="value">
-                    <el-avatar :size="30" :src="JSON.parse(value).avatar"></el-avatar>
-                    <span slot="title" class="name" :title="JSON.parse(value).username">
-                        {{ JSON.parse(value).username }}
-                        <span class="message-count" v-if="messages.unread[value].length > 0">
-                            {{ messages.unread[value].length }}
+                    v-for="user in userList"
+                    :key="JSON.stringify(user)"
+                    :index="JSON.stringify(user)">
+                    <el-avatar :size="30" :src="user.url"></el-avatar>
+                    <span slot="title" class="name" :title="user.username">
+                        {{ user.username }}
+                        <span class="message-count" v-if="messages.unread[JSON.stringify(user._id)].length > 0">
+                            {{ messages.unread[JSON.stringify(user._id)].length }}
                         </span>
                     </span>
                 </el-menu-item>
@@ -22,13 +22,13 @@
         <div v-if="!activeIndex" class="nothing">暂无互动消息</div>
         <div v-else class="chat_wrap">
             <div class="chat_title">
-                <el-avatar :size="20" :src="JSON.parse(activeIndex).avatar"></el-avatar>
+                <el-avatar :size="20" :src="JSON.parse(activeIndex).url"></el-avatar>
                 <span slot="title" class="name" :title="JSON.parse(activeIndex).username">
                     {{ JSON.parse(activeIndex).username }}
                 </span>
             </div>
             <div class="chat_contain clearfix" ref="chat_contain">
-                <div v-for="(value, i) in messages.read[activeIndex]" :key="i" class="message-wrap">
+                <div v-for="(value, i) in messages.read[JSON.stringify(JSON.parse(activeIndex)._id)]" :key="i" class="message-wrap">
                     <div v-if="value.from" class="other">
                         <el-avatar :size="20" :src="value.from.avatar"></el-avatar>
                         <div class="other-content">
@@ -44,7 +44,7 @@
                         </div>
                     </div>
                 </div>
-                <div v-for="(value, i) in messages.unread[activeIndex]" :key="i" class="message-wrap">
+                <div v-for="(value, i) in messages.unread[JSON.stringify(JSON.parse(activeIndex)._id)]" :key="i" class="message-wrap">
                     <div v-if="value.from" class="other">
                         <el-avatar :size="20" :src="value.from.avatar"></el-avatar>
                         <div class="other-content">
@@ -91,7 +91,7 @@ export default {
             this.activeIndex = key
             this.$socket.emit('hasReadInteractiveMessage', {
                 user: this.$store.getters.username,
-                other: this.activeIndex
+                other: JSON.parse(this.activeIndex)
             })
             this.$nextTick(() => {
                 this.scrollToBottom()
@@ -99,17 +99,23 @@ export default {
             this.$store.dispatch('user/nowIndex', key)
         },
         send() {
+            // this.$store.dispatch('getUserById', JSON.parse(this.activeIndex)).then(res => {
+            //     console.log(res)
+            // })
             this.$socket.emit('send interactiveMessage', {
                 to: JSON.parse(this.activeIndex),
                 from: {username:this.$store.getters.username,
-                        avatar:this.$store.getters.avatar},
+                        avatar:this.$store.getters.avatar,
+                        _id:this.$store.getters._id},
                 content: this.sendContent
             })
             // this.$socket.emit('send interactiveMessage', {
             //     to: {username:'jun',
-            //             avatar:'http://localhost:3000/imgs/avatars/1588351740614.timg (4).jpg'},
+            //             avatar:'http://localhost:3000/imgs/avatars/1588351740614.timg (4).jpg',
+            //             _id:'5e7777875c1612483073f902'},
             //     from: {username:'rachern',
-            //             avatar:'http://localhost:3000/imgs/default_avatar.png'},
+            //             avatar:'http://localhost:3000/imgs/default_avatar.png',
+            //             _id:'5ebe4aaf2b95de57b4e21129'},
             //     content: 'nihao'
             // })
             this.sendContent = ''
@@ -136,7 +142,14 @@ export default {
                     ...Object.keys(value.unread),
                     ...Object.keys(value.read)
                 ])
-                this.userList = [...userSet]
+                let userList = [...userSet]
+                userList = userList.map(e => {
+                    return JSON.parse(e)
+                })
+                console.log('userlist', userList)
+                this.$store.dispatch('user/getUserById', userList).then(res => {
+                    this.userList = res
+                })
             },
             immediate: true
         }
@@ -147,7 +160,14 @@ export default {
                 ...Object.keys(this.$store.getters.messages.interactiveMessage.unread),
                 ...Object.keys(this.$store.getters.messages.interactiveMessage.read)
             ])
-            this.userList = [...userSet]
+            let userList = [...userSet]
+            userList = userList.map(e => {
+                return JSON.parse(e)
+            })
+            console.log('userlist', userList)
+            this.$store.dispatch('user/getUserById', userList).then(res => {
+                this.userList = res
+            })
             return this.$store.getters.messages.interactiveMessage
         }
     },

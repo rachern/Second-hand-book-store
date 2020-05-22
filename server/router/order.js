@@ -10,7 +10,8 @@ const { placeOrder,
         evaluate,
         getMyOrders,
         getMyOrdersByType,
-        getMyOrderCountByType } = require('../service/order')
+        getMyOrderCountByType,
+        getOrderRecord } = require('../service/order')
 const { getMyCartList, updateCartList } = require('../service/user')
 const { getBookDetail, updateBooksNum } = require('../service/book')
 const { addComments } = require('../service/comment')
@@ -141,7 +142,8 @@ router.get('/getMyOrdersByType', async (req, res) => {
     const decode = decoded(req)
     if(decode && decode._id) {
         const myOrders = await getMyOrdersByType(decode._id, type, limit, skip)
-        if(myOrders) {
+        console.log(myOrders)
+        if(myOrders !== undefined) {
             new Result(myOrders, '获取成功').success(res)
         } else {
             new Result('获取失败').fail(res)
@@ -161,7 +163,18 @@ router.get('/getMyOrderCountByType', async (req, res) => {
             new Result('获取失败').fail(res)
         }
     }
+})
 
+// 获取订单记录统计
+router.get('/getOrderRecord', async (req, res) => {
+    const { type } = req.query
+    const result = await getOrderRecord(type)
+    if(result) {
+        // console.log(result)
+        new Result(result, '获取成功').success(res)
+    } else {
+        new Result('获取失败').fail(res)
+    }
 })
 
 module.exports = router

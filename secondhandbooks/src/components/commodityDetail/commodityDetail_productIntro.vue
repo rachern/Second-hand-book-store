@@ -47,11 +47,13 @@ export default {
             this.$socket.emit('contactSeller', {
                 username: this.$store.getters.username,
                 toUser: JSON.stringify({username:this.bookDetail.issuer.username,
-                        avatar:this.bookDetail.issuer.url})
+                        avatar:this.bookDetail.issuer.url,
+                        _id:this.bookDetail.issuer._id})
             })
             this.$router.push({ path: '/PersonalCenter/message/interactiveMessage',
                                 query: { toUser: JSON.stringify({username:this.bookDetail.issuer.username,
-                        avatar:this.bookDetail.issuer.url})} })
+                        avatar:this.bookDetail.issuer.url,
+                        _id:this.bookDetail.issuer._id})} })
         }
     },
     computed: {

@@ -19,10 +19,10 @@ export default {
       console.log(data)
       this.$store.dispatch('user/messages', data)
       if(this.$store.getters.nowIndex) {
-        if(data.interactiveMessage.unread[this.$store.getters.nowIndex].length != 0) {
+        if(data.interactiveMessage.unread[JSON.stringify(JSON.parse(this.$store.getters.nowIndex)._id)].length != 0) {
           this.$socket.emit('hasReadInteractiveMessage', {
               user: this.$store.getters.username,
-              other: this.$store.getters.nowIndex
+              other: JSON.parse(this.$store.getters.nowIndex)
           })
         }
       }

@@ -52,6 +52,100 @@ function getMyOrderCountByType(id, type) {
     }
 }
 
+// 根据类型获取订单记录统计
+function getOrderRecord(type) {
+    if(type === 'year') {
+        return Order.aggregate([
+            {
+                $match: {
+                    // 获取状态为2或3的数据
+                    state: {$in: [2,3]}
+                }
+            },
+            {
+                $project: {
+                    // 输出closingTime和number
+                    // closingTime截取前4个字符，即年份
+                    closingTime: {$substr: ['$closingTime', 0, 4]},
+                    number: 1
+                }
+            },
+            {
+                $group: {
+                    // 根据closingTime分组查询
+                    _id: '$closingTime',
+                    number: {$sum: 1}
+                }
+            },
+            {
+                // 按时间逆序排列
+                $sort: {
+                    closingTime: -1
+                }
+            },
+            { $limit: 7 } // 获取前7条数据
+        ])
+    } else if (type === 'month') {
+        let year = new Date().getFullYear()
+        let reg = new RegExp(year+'')
+        return Order.aggregate([
+            {
+                $match: {
+                    // 获取状态为2或3的数据
+                    state: {$in: [2,3]},
+                    closingTime: {$regex: reg}
+                }
+            },
+            {
+                $project: {
+                    // 输出closingTime和number
+                    // closingTime截取从第5个字符开始的2个字符，即月份
+                    closingTime: {$substr: ['$closingTime', 5, 2]},
+                    number: 1
+                }
+            },
+            {
+                $group: {
+                    // 根据closingTime分组查询
+                    _id: '$closingTime',
+                    number: {$sum: 1}
+                }
+            }
+        ])
+    } else if (type === 'day') {
+        // let year = new Date().getFullYear()
+        // let month = new Date().getMonth() + 1
+        // if(month < 10) {
+        //     month = '0' + month
+        // }
+        // let reg = `${year}-${month}`
+        return Order.aggregate([
+            {
+                $match: {
+                    // 获取状态为2或3的数据
+                    state: {$in: [2,3]},
+                    // closingTime: {$regex: reg}
+                }
+            },
+            {
+                $project: {
+                    // 输出closingTime和number
+                    // closingTime截取从第8个字符开始的2个字符，即日期
+                    closingTime: {$substr: ['$closingTime', 0, 10]},
+                    number: 1
+                }
+            },
+            {
+                $group: {
+                    // 根据closingTime分组查询
+                    _id: '$closingTime',
+                    number: {$sum: 1}
+                }
+            }
+        ])
+    }
+}
+
 module.exports = {
     placeOrder,
     deleteOrder,
@@ -61,5 +155,6 @@ module.exports = {
     evaluate,
     getMyOrders,
     getMyOrdersByType,
-    getMyOrderCountByType
+    getMyOrderCountByType,
+    getOrderRecord
 }

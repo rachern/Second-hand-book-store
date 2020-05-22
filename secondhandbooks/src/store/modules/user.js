@@ -15,7 +15,8 @@ import { login,
          updateUserRolesById,
          moveToShoppingCart,
          moveToCollections,
-         getAllUsers } from '@/api/user'
+         getAllUsers,
+         getUserById } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const state = {
@@ -30,8 +31,18 @@ const state = {
     myCollectionBooks: [],
     myCartList: {},
     userList: [],
-    messages: {},
-    nowIndex: ''
+    messages: {
+        interactiveMessage: {
+            read: {},
+            unread: {}
+        },
+        systemMessage: {
+            read: {},
+            unread: {}
+        }
+    },
+    nowIndex: '',
+    _id: ''
 }
 
 const mutations = {
@@ -73,6 +84,9 @@ const mutations = {
     },
     SET_NOWINDEX: (state, index) => {
         state.nowIndex = index
+    },
+    SET_ID: (state, id) => {
+        state._id = id
     }
 }
 
@@ -104,7 +118,9 @@ const actions = {
                 if(!data) {
                     reject('验证失败，请重新登录')
                 }
-                const { username, email, introduction, phoneNumber, roles, sex, url } = data
+                const { username, email, introduction, phoneNumber, roles, sex, url, _id } = data
+                console.log(data)
+                commit('SET_ID', _id)
                 commit('SET_EMAIL', email)
                 commit('SET_INTRODUCTION', introduction)
                 commit('SET_PHONENUMBER', phoneNumber)
@@ -327,6 +343,15 @@ const actions = {
     // 储存当前聊天对象
     nowIndex({ commit }, index) {
         commit('SET_NOWINDEX', index)
+    },
+
+    // 根据用户id获取用户信息
+    getUserById({ commit }, userList) {
+        return new Promise((resolve, reject) => {
+            getUserById(userList).then(res => {
+                resolve(res.data.data)
+            })
+        })
     }
 }
 

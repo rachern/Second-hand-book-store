@@ -12,6 +12,7 @@ const getters = {
     userList: state => state.user.userList,
     messages: state => state.user.messages,
     nowIndex: state => state.user.nowIndex,
+    _id: state => state.user._id,
     carousels: state => state.carousel.carousels,
     allCarousels: state => state.carousel.allCarousels,
     booktypes: state => state.booktype.booktypes,

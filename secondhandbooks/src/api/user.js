@@ -165,3 +165,12 @@ export function getAllUsers() {
         method: 'get'
     }) 
 }
+
+// 根据用户id获取用户信息
+export function getUserById(userList) {
+    return request({
+        url: '/user/getUserById',
+        method: 'get',
+        params: { userList }
+    })
+}

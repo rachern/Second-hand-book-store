@@ -63,14 +63,14 @@ export default {
     watch: {
         messages: {
             handler: function(newValue) {
+                console.log(newValue)
                 let unreadMessage = 0
                 unreadMessage += newValue.systemMessage.unread.length
                 for(let key in newValue.interactiveMessage.unread) {
                     unreadMessage += newValue.interactiveMessage.unread[key].length
                 }
                 this.unreadMessage = unreadMessage
-            },
-            immediate: true
+            }
         }
     },
     computed: {

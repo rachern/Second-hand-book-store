@@ -23,7 +23,8 @@ const { createUser,
         addToShoppingCart,
         moveToShoppingCart,
         moveToCollections,
-        getAllUsers } = require('../service/user')
+        getAllUsers,
+        getUserById } = require('../service/user')
 const { getMyCollectionBooks } = require('../service/book')
 const { decoded } = require('../utils')
 
@@ -153,7 +154,7 @@ router.get('/myCollectionBooks', async (req, res) => {
         const col = await getCollections(decode._id)
         let { collections } = col
         const { limit, skip } = req.query
-        collections = collections.reverse().slice(skip, skip+limit)
+        collections = collections.reverse().slice(parseInt(skip), parseInt(skip)+parseInt(limit))
         let bookIds = []
         collections.forEach(element => {
             bookIds.push({_id: element})
@@ -364,6 +365,17 @@ router.get('/getAllUsers', async (req, res) => {
     const userList = await getAllUsers()
     if(userList) {
         new Result(userList, '获取成功').success(res)
+    } else {
+        new Result('获取失败').fail(res)
+    }
+})
+
+// 根据用户id获取用户信息
+router.get('/getUserById', async (req, res) => {
+    const { userList } = req.query
+    const result = await getUserById(userList)
+    if(result !== undefined) {
+        new Result(result, '获取成功').success(res)
     } else {
         new Result('获取失败').fail(res)
     }
