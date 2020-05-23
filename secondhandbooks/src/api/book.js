@@ -104,3 +104,21 @@ export function rejectPostBook(obj) {
         data: obj
     })
 }
+
+// 根据关键词搜索书籍
+export function findBooks(query, limit, skip) {
+    return request({
+        url: '/book/findBooks',
+        method: 'get',
+        params: { query, limit, skip }
+    })
+}
+
+// 获取根据关键词搜索书籍的数量
+export function getfindBooksResultCount(query) {
+    return request({
+        url: '/book/getfindBooksResultCount',
+        method: 'get',
+        params: { query }
+    })
+}

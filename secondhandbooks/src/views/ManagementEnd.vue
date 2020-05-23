@@ -13,11 +13,11 @@
                 background-color="#545c64"
                 text-color="#fff"
                 active-text-color="#ffd04b">
-                <el-menu-item index="/carouselMapManagement">
+                <el-menu-item index="/carouselMapManagement" v-if="roles.includes('superAdmin')">
                     <i class="el-icon-picture"></i>
                     <span slot="title">轮播图管理</span>
                 </el-menu-item>
-                <el-submenu index="/bookClassificationManagement">
+                <el-submenu index="/bookClassificationManagement"  v-if="roles.includes('superAdmin')">
                     <template slot="title">
                         <i class="el-icon-menu"></i>
                         <span>书籍分类管理</span>
@@ -44,12 +44,12 @@
                         <i class="iconfont icon-iconfontzhizuobiaozhunbduan31"></i>
                         <span slot="title">上架书籍审核</span>
                     </el-menu-item>
-                    <el-menu-item index="/bookReview/auction">
+                    <!-- <el-menu-item index="/bookReview/auction">
                         <i class="iconfont icon-paimaichui"></i>
                         <span slot="title">拍卖书籍审核</span>
-                    </el-menu-item>
+                    </el-menu-item> -->
                 </el-submenu>
-                <el-menu-item index="/userManagement">
+                <el-menu-item index="/userManagement" v-if="roles.includes('superAdmin')">
                     <i class="el-icon-user-solid"></i>
                     <span slot="title">用户管理</span>
                 </el-menu-item>
@@ -57,7 +57,7 @@
                     <i class="el-icon-chat-line-square"></i>
                     <span slot="title">消息推送</span>
                 </el-menu-item>
-                <el-menu-item index="/orderManagement">
+                <el-menu-item index="/orderManagement" v-if="roles.includes('superAdmin')">
                     <i class="el-icon-s-order"></i>
                     <span slot="title">订单管理</span>
                 </el-menu-item>
@@ -120,6 +120,11 @@ export default {
                 }
             },
             immediate: true
+        }
+    },
+    computed: {
+        roles() {
+            return this.$store.getters.roles
         }
     }
 }

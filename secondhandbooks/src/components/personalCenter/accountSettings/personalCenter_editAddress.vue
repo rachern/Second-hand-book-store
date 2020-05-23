@@ -26,7 +26,8 @@
                             <el-input v-model="addressForm.phone"></el-input>
                         </el-form-item>
                         <el-form-item label="是否为默认地址" prop="defaultAddress">
-                            <el-switch v-model="addressForm.defaultAddress"></el-switch>
+                            <el-switch v-model="addressForm.defaultAddress"
+                                :disabled="request == 'changeAddress'"></el-switch>
                         </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click="onSubmit">保存</el-button>

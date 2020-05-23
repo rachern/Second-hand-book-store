@@ -143,7 +143,7 @@ router.get('/getMyOrdersByType', async (req, res) => {
     if(decode && decode._id) {
         const myOrders = await getMyOrdersByType(decode._id, type, limit, skip)
         console.log(myOrders)
-        if(myOrders !== undefined) {
+        if(myOrders) {
             new Result(myOrders, '获取成功').success(res)
         } else {
             new Result('获取失败').fail(res)
@@ -157,11 +157,7 @@ router.get('/getMyOrderCountByType', async (req, res) => {
     const decode = decoded(req)
     if(decode && decode._id) {
         const myOrderCount = await getMyOrderCountByType(decode._id, type)
-        if(myOrderCount) {
-            new Result(myOrderCount, '获取成功').success(res)
-        } else {
-            new Result('获取失败').fail(res)
-        }
+        new Result(myOrderCount, '获取成功').success(res)
     }
 })
 

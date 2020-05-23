@@ -78,6 +78,7 @@ export default {
         background-color: rgba(255,255,255,.8);
         .home_contain_inner{
             width: 90vw;
+            min-width: 1170px;
             margin: 0 auto;
             .contain{
                 text-align: left;
@@ -85,6 +86,7 @@ export default {
                 .right{
                     display: inline-block;
                     width: 76vw;
+                    min-width: 988px;
                 }
             }
         }

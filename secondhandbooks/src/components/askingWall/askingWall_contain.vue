@@ -4,7 +4,7 @@
             <tab></tab>
             <div class="content">
                 <div class="post-asking-message">
-                    <el-button type="info" @click="postMessage">发布书籍求购信息</el-button>
+                    <el-button type="info" @click="postMessage">发布征书信息</el-button>
                 </div>
                 <router-view></router-view>
             </div>

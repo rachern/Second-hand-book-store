@@ -7,7 +7,7 @@ import getPageTitle from '@/utils/getPageTitle' //获取网页名称
 //白名单，不需要验证token
 const whiteList = ['/', '/LoginRegister', '/AskingWall']
 //因为动态路由，需要正则匹配的名单
-const whiteList2 = ['/Classification', '/CommodityDetail']
+const whiteList2 = ['/Classification', '/CommodityDetail', '/FindBooksResult']
 
 router.beforeEach(async (to, from, next) => {
     const hasToken = getToken()
@@ -26,7 +26,9 @@ router.beforeEach(async (to, from, next) => {
                 next()
             } else {
                 try {
-                    const { roles, username } = await store.dispatch('user/getInfo')
+                    const { roles } = await store.dispatch('user/getInfo')
+                    const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+                    router.addRoutes(accessRoutes)
                     // console.log(roles)
                     // this.$socket.emit('username', username)
                     next({ ...to, replace: true })

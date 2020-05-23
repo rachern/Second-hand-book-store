@@ -34,25 +34,33 @@ export default {
     },
     methods: {
         moveToShoppingCart() {
-            this.$store.dispatch('user/moveToShoppingCart', {id:this.bookDetail._id, num:this.num}).then(res => {
-                this.$message.success('加入购物车成功')
-            })
+            if(!this.$store.getters.username) {
+                this.$message.warning('请登录后再添加到购物车')
+            } else {
+                this.$store.dispatch('user/moveToShoppingCart', {id:this.bookDetail._id, num:this.num}).then(res => {
+                    this.$message.success('加入购物车成功')
+                })
+            }
         },
         moveToCollections() {
-            this.$store.dispatch('user/moveToCollections', this.bookDetail._id).then(res => {
-                this.$message.success(res.msg)
-            })
+            if(!this.$store.getters.username) {
+                this.$message.warning('请登录后再添加到收藏夹')
+            } else {
+                this.$store.dispatch('user/moveToCollections', this.bookDetail._id).then(res => {
+                    this.$message.success(res.msg)
+                })
+            }
         },
         contactSeller() {
             this.$socket.emit('contactSeller', {
                 username: this.$store.getters.username,
                 toUser: JSON.stringify({username:this.bookDetail.issuer.username,
-                        avatar:this.bookDetail.issuer.url,
+                        url:this.bookDetail.issuer.url,
                         _id:this.bookDetail.issuer._id})
             })
             this.$router.push({ path: '/PersonalCenter/message/interactiveMessage',
                                 query: { toUser: JSON.stringify({username:this.bookDetail.issuer.username,
-                        avatar:this.bookDetail.issuer.url,
+                        url:this.bookDetail.issuer.url,
                         _id:this.bookDetail.issuer._id})} })
         }
     },

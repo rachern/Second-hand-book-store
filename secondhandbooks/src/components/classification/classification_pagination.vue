@@ -16,7 +16,7 @@
 <script>
 import { getAskingBookCount, getMyAskingBooksCount } from '@/api/askingBook'
 import { getCommentCount } from '@/api/comment'
-import { getClassificationBooksCount, getMyPublishBooksCount, getPostBookReviewCount } from '@/api/book'
+import { getClassificationBooksCount, getMyPublishBooksCount, getPostBookReviewCount, getfindBooksResultCount } from '@/api/book'
 import { getMyCollectionBooksCount } from '@/api/user'
 import { getMyOrderCountByType } from '@/api/order'
 
@@ -31,6 +31,7 @@ export default {
         $route: {
             handler: function(route) {
                 // console.log(route.meta.name)
+                const {query} = route.params
                 const {name} = route.meta
                 if(name === 'CommodityDetail') {
                     const {id} = route.params
@@ -66,7 +67,12 @@ export default {
                     })
                 } else if(name === 'postBookReview') {
                     getPostBookReviewCount().then(res => {
-                        const { data } =res.data
+                        const { data } = res.data
+                        this.count = data
+                    })
+                } else if(name === 'FindBooksResult') {
+                    getfindBooksResultCount(query).then(res => {
+                        const { data } = res.data
                         this.count = data
                     })
                 } else if(name === 'order') {
@@ -113,7 +119,7 @@ export default {
     methods: {
         handleChangePage(val) {
             // console.log(val)
-            const { id } = this.$route.params
+            const { id, query } = this.$route.params
             const { name } = this.$route.meta
             if(name === 'CommodityDetail') {
                 this.$store.dispatch('comment/getComments',{ id, limit: this.pageSize, skip: (val-1)*this.pageSize })
@@ -133,6 +139,8 @@ export default {
             } else if(name === 'postBookReview') {
                 this.$store.dispatch('book/getPostBookReviewList', {limit: this.pageSize, skip: (val-1)*this.pageSize })
                 document.querySelector('#post-book-review-list-title').scrollIntoView()
+            } else if(name === 'FindBooksResult') {
+                this.$store.dispatch('book/findBooks', { query, limit: this.pageSize, skip: (val-1)*this.pageSize })
             } else if(name === 'order') {
                 const type = this.$route.params.type
                 switch(type) {

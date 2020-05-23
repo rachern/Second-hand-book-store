@@ -6,14 +6,16 @@ import { getHomeBooks,
          getMyPublishBooks,
          getPostBookReviewList,
          passPostBook,
-         rejectPostBook} from '@/api/book'
+         rejectPostBook,
+         findBooks} from '@/api/book'
 
 const state = {
     homeBooks: null,
     classificationBooks: [],
     bookDetail: null,
     myPublishBooks: [],
-    postBookReviewList: []
+    postBookReviewList: [],
+    findResult: []
 }
 
 const mutations = {
@@ -31,6 +33,9 @@ const mutations = {
     },
     SET_POSTBOOKREVIEWLIST: (state, postBookReviewList) => {
         state.postBookReviewList = postBookReviewList
+    },
+    SET_FINDRESULT: (state, findResult) => {
+        state.findResult = findResult
     }
 }
 
@@ -136,6 +141,17 @@ const actions = {
     rejectPostBook({ commit }, obj) {
         return new Promise((resolve, reject) => {
             rejectPostBook(obj).then(res => {
+                resolve(res)
+            })
+        })
+    },
+
+    //根据关键词搜索书籍
+    findBooks({ commit }, obj) {
+        const { skip = 0, limit, query } = obj
+        return new Promise((resolve, reject) => {
+            findBooks(query, limit, skip).then(res => {
+                commit('SET_FINDRESULT', res.data.data)
                 resolve(res)
             })
         })

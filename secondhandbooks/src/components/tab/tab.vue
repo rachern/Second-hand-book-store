@@ -11,7 +11,7 @@
 export default {
     data(){
         return {
-            menus:['首页','征书墙','书籍竞拍','发布书籍']
+            menus:['首页','征书墙','发布征书信息','发布书籍']
         }
     },
     methods: {
@@ -23,8 +23,8 @@ export default {
                 case '征书墙':
                     this.$router.push({path: '/AskingWall'})
                     break;
-                case '书籍竞拍':
-                    this.$router.push({path: '/BookAuction'})
+                case '发布征书信息':
+                    this.$router.push({path: '/AskingWall/postMessage'})
                     break;
                 case '发布书籍':
                     this.$router.push({path: '/PublishBook'})
@@ -48,6 +48,7 @@ export default {
         .tab_menu{
             display: inline-block;
             width: 22.5vw;
+            min-width: 292.5px;
             height: 100%;
             line-height: 2;
             text-align: center;

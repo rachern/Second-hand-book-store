@@ -41,8 +41,8 @@
                 </div>
             </div>
             <div class="search">
-                <input type="search">
-                <span><i class="iconfont icon-search"></i></span>
+                <input type="search" v-model="searchText">
+                <span @click="search"><i class="iconfont icon-search"></i></span>
             </div>
             <div class="webHome" @click="toView('/')">网站首页</div>
         </div>
@@ -54,7 +54,8 @@ export default {
     data() {
         return {
             showUser: false,
-            unreadMessage: 0
+            unreadMessage: 0,
+            searchText: ''
         }
     },
     mounted() {
@@ -107,6 +108,9 @@ export default {
         },
         toView(path) {
             this.$router.push({ path: path })
+        },
+        search() {
+            this.$router.push({ path: `/FindBooksResult/${this.searchText}` })
         }
     }
 }

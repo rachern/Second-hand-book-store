@@ -12,7 +12,9 @@ const { getFirstFiveBooks,
         getPostBookReviewList,
         getPostBookReviewCount,
         passPostBook,
-        rejectPostBook } = require('../service/book')
+        rejectPostBook,
+        findBooks,
+        getfindBooksResultCount } = require('../service/book')
 const { decoded } = require('../utils')
 
 const router = express.Router()
@@ -100,7 +102,7 @@ router.get('/getMyPublishBooksCount', async (req, res) => {
     const decode = decoded(req)
     if(decode && decode._id) {
         const myPublishBooksCount = await getMyPublishBooksCount(decode._id)
-        if(myPublishBooksCount) {
+        if(myPublishBooksCount >= 0) {
             new Result(myPublishBooksCount, '获取成功').success(res)
         } else {
             new Result('获取失败').fail(res)
@@ -122,7 +124,7 @@ router.get('/getPostBookReviewList', async (req, res) => {
 // 获取待审核上架的书籍数量
 router.get('/getPostBookReviewCount', async (req, res) => {
     const postBookReviewCount = await getPostBookReviewCount()
-    if(postBookReviewCount) {
+    if(postBookReviewCount >= 0) {
         new Result(postBookReviewCount, '获取成功').success(res)
     } else {
         new Result('获取失败').fail(res)
@@ -149,6 +151,26 @@ router.post('/rejectPostBook', async (req, res) => {
     } else {
         new Result('提交失败').fail(res)
     }
+})
+
+// 根据关键词搜索书籍
+router.get('/findBooks', async (req, res) => {
+    const { query, limit, skip } = req.query
+    const result = await findBooks(query, limit, skip)
+    if(result) {
+        new Result(result, '查询成功').success(res)
+    } else {
+        new Result('查询失败').fail(res)
+    }
+})
+
+// 获取根据关键词搜索书籍的数量
+router.get('/getfindBooksResultCount', async (req, res) => {
+    // console.log(1)
+    const { query } = req.query
+    const count = await getfindBooksResultCount(query)
+    // console.log(count)
+    new Result(count, '获取成功').success(res)
 })
 
 module.exports = router

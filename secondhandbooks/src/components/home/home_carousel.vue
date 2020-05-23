@@ -31,8 +31,9 @@ export default {
         ])
     },
     mounted(){
-        this.imgLoad();
+        // this.imgLoad();
         window.addEventListener('resize', ()=>{
+            console.log(this.$refs.bannerHeight)
             this.bannerHeight = this.$refs.bannerHeight[0].height;
             this.imgLoad();
         },false)

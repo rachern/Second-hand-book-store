@@ -105,6 +105,28 @@ function rejectPostBook(id, rejectReason) {
     return Book.findOneAndUpdate({_id: id}, {state: 2, rejectReason})
 }
 
+// 根据关键词查询书籍
+function findBooks(query, limit, skip) {
+    const reg = new RegExp(query, 'i')
+    return Book.find({
+        $or: [
+            {author: {$regex: reg}},
+            {title: {$regex: reg}}
+        ]
+    }).skip(parseInt(skip)).limit(parseInt(limit))
+}
+
+// 获取根据关键词查询书籍的数量
+function getfindBooksResultCount(query) {
+    const reg = new RegExp(query, 'i')
+    return Book.find({
+        $or: [
+            {author: {$regex: reg}},
+            {title: {$regex: reg}}
+        ]
+    }).countDocuments()
+}
+
 module.exports = {
     getFirstFiveBooks,
     getClassificationBooks,
@@ -119,5 +141,7 @@ module.exports = {
     getPostBookReviewList,
     passPostBook,
     rejectPostBook,
-    updateBooksNum
+    updateBooksNum,
+    findBooks,
+    getfindBooksResultCount
 }

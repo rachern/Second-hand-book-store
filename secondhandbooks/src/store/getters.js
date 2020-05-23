@@ -21,11 +21,13 @@ const getters = {
     bookDetail: state => state.book.bookDetail,
     myPublishBooks: state => state.book.myPublishBooks,
     postBookReviewList: state => state.book.postBookReviewList,
+    findResult: state => state.book.findResult,
     comments: state => state.comment.comments,
     askingBooks: state => state.askingBook.askingBooks,
     myAskingBooks: state => state.askingBook.myAskingBooks,
     addressList: state => state.address.addressList,
-    orderList: state => state.order.orderList
+    orderList: state => state.order.orderList,
+    permission_routes: state => state.permission.routes
     // roles: state => state.role.roles
 }
 

@@ -49,12 +49,12 @@ export default {
             this.$socket.emit('contactSeller', {
                 username: this.$store.getters.username,
                 toUser: JSON.stringify({username:name,
-                        avatar:avatar,
+                        url:avatar,
                         _id:_id})
             })
             this.$router.push({ path: '/PersonalCenter/message/interactiveMessage',
                                 query: { toUser: JSON.stringify({username:name,
-                        avatar:avatar,
+                        url:avatar,
                         _id:_id})} })
         }
     },

@@ -15,6 +15,8 @@ module.exports = jwt({
         '/book/getClassificationBooksCount',//获取分类展示页书籍的数量
         '/book/getClassificationBooks',//获取分类展示页书籍
         '/book/getBookDetail',//获取书籍详情
+        '/book/getfindBooksResultCount',//获取根据关键词搜索书籍的数量
+        '/book/findBooks', //根据关键词搜索书籍
         '/comment/getCommentCount',//获取评论数量
         '/comment/getComments',//获取评论
         '/askingBook/getAskingBookCount',//获取征书墙书籍数量

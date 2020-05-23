@@ -130,11 +130,13 @@ module.exports = function(io) {
 
         // 联系卖家
         socket.on('contactSeller', async data => {
+            // console.log(data)
             const { username, toUser } = data
             const messages = await getMessages(username)
             const { message } = messages
-            if(!message.interactiveMessage.read[toUser] && !message.interactiveMessage.unread[toUser]) {
-                message.interactiveMessage.unread[toUser] = []
+            // console.log(message)
+            if(!message.interactiveMessage.read[JSON.stringify(JSON.parse(toUser)._id)] && !message.interactiveMessage.unread[JSON.stringify(JSON.parse(toUser)._id)]) {
+                message.interactiveMessage.unread[JSON.stringify(JSON.parse(toUser)._id)] = []
                 const newMessage = await hasReadInteractiveMessage(username, message)
                 io.sockets.to(users[username]).emit('accept messages', newMessage.message)
             }
