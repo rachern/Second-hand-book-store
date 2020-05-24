@@ -112,7 +112,8 @@ function findBooks(query, limit, skip) {
         $or: [
             {author: {$regex: reg}},
             {title: {$regex: reg}}
-        ]
+        ],
+        state: 1
     }).skip(parseInt(skip)).limit(parseInt(limit))
 }
 
@@ -123,7 +124,8 @@ function getfindBooksResultCount(query) {
         $or: [
             {author: {$regex: reg}},
             {title: {$regex: reg}}
-        ]
+        ],
+        state: 1
     }).countDocuments()
 }
 

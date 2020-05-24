@@ -10,7 +10,8 @@
                         <li :title="book.press">出版社：{{book.publisher}}</li>
                         <li :title="book.publishingTime">出版时间：{{book.publishingTime}}</li>
                         <li :title="book.author">作者：{{book.author}}</li>
-                        <li :title="book.state === 0 ? '待审核' : (book.state === 1 ? '已发布' : '已驳回')">
+                        <li :class="{red: book.state === 2}"
+                            :title="book.state === 0 ? '待审核' : (book.state === 1 ? '已发布' : '已驳回')">
                             发布状态：{{book.state === 0 ? '待审核' : (book.state === 1 ? '已发布' : '已驳回')}}
                         </li>
                         <li :title="book.ISBN">ISBN：{{book.ISBN}}</li>
@@ -19,7 +20,7 @@
                         <li :title="book.pack">包装：{{book.pack}}</li>
                         <li :title="book.size">开本：{{book.size}}</li>
                         <li :title="book.paper">用纸：{{book.paper}}</li>
-                        <li :title="book.rejectReason" v-if="book.rejectReason">驳回原因：{{book.rejectReason}}</li>
+                        <li :title="book.rejectReason" v-if="book.rejectReason" class="red">驳回原因：{{book.rejectReason}}</li>
                     </ul>
                     <div class="pic-wrap">
                         <div>
@@ -73,6 +74,9 @@ export default {
         padding: 20px;
         background-color: #fff;
         margin: 20px auto;
+        .red{
+            color: rgb(214, 16, 16);
+        }
         .title{
             background-color: #f7f7f7;
             border: 1px solid #eee;

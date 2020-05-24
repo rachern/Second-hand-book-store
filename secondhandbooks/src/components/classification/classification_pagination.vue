@@ -6,6 +6,7 @@
             :page-size="pageSize"
             layout="prev, pager, next, jumper"
             :total="total || count"
+            :current-page = "currentPage"
             prev-text="< 上一页"
             next-text="下一页 >"
             @current-change="handleChangePage">
@@ -24,13 +25,15 @@ export default {
     props: ['pageSize','total'],
     data() {
         return {
-            count: 0
+            count: 0,
+            currentPage: 1
         }
     },
     watch: {
         $route: {
             handler: function(route) {
                 // console.log(route.meta.name)
+                this.currentPage = 1
                 const {query} = route.params
                 const {name} = route.meta
                 if(name === 'CommodityDetail') {
@@ -119,6 +122,7 @@ export default {
     methods: {
         handleChangePage(val) {
             // console.log(val)
+            this.currentPage = val
             const { id, query } = this.$route.params
             const { name } = this.$route.meta
             if(name === 'CommodityDetail') {
