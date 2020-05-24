@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import { debounce } from '../../utils/utils'
 export default {
     data() {
         return {
@@ -109,8 +110,13 @@ export default {
         toView(path) {
             this.$router.push({ path: path })
         },
-        search() {
+        queryBooks() {
             this.$router.push({ path: `/FindBooksResult/${this.searchText}` })
+        },
+        search() {
+            if(this.searchText) {
+                debounce(this.queryBooks(), 500)
+            }
         }
     }
 }

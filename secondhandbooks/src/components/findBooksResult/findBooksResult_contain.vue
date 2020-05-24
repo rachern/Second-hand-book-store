@@ -3,7 +3,11 @@
         <div class="find-books-result-contain-inner">
             <tab></tab>
             <div class="find-books-result-showBooks">
-                <book style="width: 16.6%" v-for="(book,index) in findResult" :key="index" :book_message="book"></book>
+                <div class="nothing" v-if="findResult.length === 0">
+                    <i class="iconfont icon-ganga"></i>
+                    没有搜索到任何书籍！
+                </div>
+                <book v-else style="width: 16.6%" v-for="(book,index) in findResult" :key="index" :book_message="book"></book>
             </div>
             <pagination :pageSize="pageSize"></pagination>
         </div>
@@ -46,6 +50,15 @@ export default {
                 margin-top: 2vh;
                 text-align: left;
                 min-height: 536px;
+                .nothing{
+                    font-size: 34px;
+                    color: #b8aeae;
+                    text-align: center;
+                    margin: 186px auto 0;
+                    i{
+                        font-size: 50px;
+                    }
+                }
             }
         }
     }

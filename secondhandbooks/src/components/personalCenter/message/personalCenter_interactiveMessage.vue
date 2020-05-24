@@ -78,6 +78,7 @@
 </template>
 
 <script>
+import { debounce } from '../../../utils/utils'
 export default {
     data() {
         return {
@@ -99,10 +100,7 @@ export default {
             })
             this.$store.dispatch('user/nowIndex', key)
         },
-        send() {
-            // this.$store.dispatch('getUserById', JSON.parse(this.activeIndex)).then(res => {
-            //     console.log(res)
-            // })
+        sendMessage() {
             this.$socket.emit('send interactiveMessage', {
                 to: JSON.parse(this.activeIndex),
                 from: {username:this.$store.getters.username,
@@ -110,6 +108,14 @@ export default {
                         _id:this.$store.getters._id},
                 content: this.sendContent
             })
+        },
+        send() {
+            // this.$store.dispatch('getUserById', JSON.parse(this.activeIndex)).then(res => {
+            //     console.log(res)
+            // })
+            if(this.sendContent) {
+                debounce(this.sendMessage(), 500)
+            }
             // this.$socket.emit('send interactiveMessage', {
             //     to: {username:'jun',
             //             avatar:'http://localhost:3000/imgs/avatars/1588351740614.timg (4).jpg',
