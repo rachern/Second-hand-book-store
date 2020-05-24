@@ -8,16 +8,16 @@
             label-width="22%" 
             class="demo-registerForm form">
             <el-form-item label="用户昵称" prop="username" :error="errMsg">
-                <el-input v-model="registerForm.username" placeholder="请输入用户昵称"></el-input>
+                <el-input v-model="registerForm.username" placeholder="请输入用户昵称" @keyup.enter.native="onRegister"></el-input>
             </el-form-item>
             <el-form-item label="用户密码" prop="password">
-                <el-input type="password" v-model="registerForm.password" placeholder="请输入用户密码（6-16个字符组成，区分大小写）" show-password></el-input>
+                <el-input type="password" v-model="registerForm.password" placeholder="请输入用户密码（6-16个字符组成，区分大小写）" show-password @keyup.enter.native="onRegister"></el-input>
             </el-form-item>
             <el-form-item label="确认密码" prop="rePassword">
-                <el-input type="password" v-model="registerForm.rePassword" placeholder="请再次输入密码" show-password></el-input>
+                <el-input type="password" v-model="registerForm.rePassword" placeholder="请再次输入密码" show-password @keyup.enter.native="onRegister"></el-input>
             </el-form-item>
             <el-form-item label="手机号码" prop="phoneNumber">
-                <el-input v-model="registerForm.phoneNumber" placeholder="请输入常用的手机号码"></el-input>
+                <el-input v-model="registerForm.phoneNumber" placeholder="请输入常用的手机号码" @keyup.enter.native="onRegister"></el-input>
             </el-form-item>
             <el-form-item class="btn">
                 <el-button type="info" plain @click="login">已有帐号，去登录</el-button>

@@ -41,7 +41,7 @@
                 </div>
             </div>
             <div class="search">
-                <input type="search" v-model="searchText">
+                <input type="search" v-model="searchText" @keyup.enter="search">
                 <span @click="search"><i class="iconfont icon-search"></i></span>
             </div>
             <div class="webHome" @click="toView('/')">网站首页</div>

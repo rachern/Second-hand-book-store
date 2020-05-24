@@ -9,10 +9,13 @@
             class="demo-loginForm form"
             hide-required-asterisk>
             <el-form-item label="用户昵称" prop="username">
-                <el-input v-model="loginForm.username" placeholder="请输入用户昵称" ref="loginUsername"></el-input>
+                <el-input v-model="loginForm.username" 
+                        placeholder="请输入用户昵称" 
+                        ref="loginUsername"
+                        @keyup.enter.native="onLogin"></el-input>
             </el-form-item>
             <el-form-item label="用户密码" prop="password" :error="errMsg">
-                <el-input v-model="loginForm.password" placeholder="请输入用户密码" ref="loginPassword" show-password></el-input>
+                <el-input v-model="loginForm.password" placeholder="请输入用户密码" ref="loginPassword" show-password @keyup.enter.native="onLogin"></el-input>
             </el-form-item>
             <el-form-item class="btn">
                 <el-button type="info" plain @click="onLogin">登录</el-button>
