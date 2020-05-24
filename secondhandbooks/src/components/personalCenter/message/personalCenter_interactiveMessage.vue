@@ -67,7 +67,7 @@
                     :rows="2"
                     placeholder="请输入要发送的内容"
                     v-model="sendContent"
-                    @keyup.enter.native="send">
+                    @keyup.ctrl.enter.native="send">
                 </el-input>
             </div>
             <div class="button_send">
