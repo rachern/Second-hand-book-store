@@ -87,7 +87,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
     .login{
         position: absolute;
         top: 50%;
@@ -115,38 +115,38 @@ export default {
                 }
             }
         }
-    }
-    .el-form-item__label{
-        font-size: 18px;
-        color: rgb(29, 28, 28);
-    }
-    .el-form-item__content{
-        text-align: left;
-    }
-    .el-form-item__error{
-        font-size: 16px;
-        color: #e73232
-    }
-    .el-input{
-        font-size: 16px;
-        width: 100%;
-        // border-radius: 15px;
-        .el-input__inner{
+        .el-form-item__label{
+            font-size: 18px;
+            color: rgb(29, 28, 28);
+        }
+        .el-form-item__content{
+            text-align: left;
+        }
+        .el-form-item__error{
+            font-size: 16px;
+            color: #e73232
+        }
+        .el-input{
+            font-size: 16px;
+            width: 100%;
+            // border-radius: 15px;
+            .el-input__inner{
+                border-radius: 20px;
+                border: 1.5px solid rgba(27, 24, 24, 0.6);
+            }
+        }
+        .el-switch.is-checked .el-switch__core{
+            border-color: #292829;
+            background-color: #292829;
+        }
+        .el-button{
             border-radius: 20px;
             border: 1.5px solid rgba(27, 24, 24, 0.6);
+            width: 40%;
+            font-size: 16px;
         }
-    }
-    .el-switch.is-checked .el-switch__core{
-        border-color: #292829;
-        background-color: #292829;
-    }
-    .el-button{
-        border-radius: 20px;
-        border: 1.5px solid rgba(27, 24, 24, 0.6);
-        width: 40%;
-        font-size: 16px;
-    }
-    .el-button--info.is-plain{
-        border: 1.5px solid rgba(27, 24, 24, 0.6);
+        .el-button--info.is-plain{
+            border: 1.5px solid rgba(27, 24, 24, 0.6);
+        }
     }
 </style>

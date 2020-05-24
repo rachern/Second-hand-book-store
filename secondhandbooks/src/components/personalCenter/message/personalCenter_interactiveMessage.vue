@@ -181,6 +181,9 @@ export default {
     mounted() {
         this.scrollToBottom()
     },
+    updated() {
+        this.scrollToBottom()
+    },
     beforeDestroy() {
         this.$store.dispatch('user/nowIndex', '')
     }
