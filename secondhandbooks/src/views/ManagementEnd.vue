@@ -13,6 +13,10 @@
                 background-color="#545c64"
                 text-color="#fff"
                 active-text-color="#ffd04b">
+                <el-menu-item index="/messagePush">
+                    <i class="el-icon-chat-line-square"></i>
+                    <span slot="title">消息推送</span>
+                </el-menu-item>
                 <el-menu-item index="/carouselMapManagement" v-if="roles.includes('superAdmin')">
                     <i class="el-icon-picture"></i>
                     <span slot="title">轮播图管理</span>
@@ -52,10 +56,6 @@
                 <el-menu-item index="/userManagement" v-if="roles.includes('superAdmin')">
                     <i class="el-icon-user-solid"></i>
                     <span slot="title">用户管理</span>
-                </el-menu-item>
-                <el-menu-item index="/messagePush">
-                    <i class="el-icon-chat-line-square"></i>
-                    <span slot="title">消息推送</span>
                 </el-menu-item>
                 <el-menu-item index="/orderManagement" v-if="roles.includes('superAdmin')">
                     <i class="el-icon-s-order"></i>

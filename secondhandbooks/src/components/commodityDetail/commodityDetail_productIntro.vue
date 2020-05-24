@@ -1,7 +1,7 @@
 <template>
     <div class="product-intro">
         <div class="preview">
-            <span></span><img :src="bookDetail.url" />
+            <img :src="bookDetail.url" />
         </div>
         <div class="item-info">
             <h2 class="title">{{bookDetail.title}}</h2><br/>
