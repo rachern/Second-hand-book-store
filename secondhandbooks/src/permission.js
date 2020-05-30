@@ -29,6 +29,7 @@ router.beforeEach(async (to, from, next) => {
                     const { roles } = await store.dispatch('user/getInfo')
                     const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
                     router.addRoutes(accessRoutes)
+                    console.log(router)
                     // console.log(roles)
                     // this.$socket.emit('username', username)
                     next({ ...to, replace: true })

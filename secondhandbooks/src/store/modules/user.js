@@ -18,6 +18,7 @@ import { login,
          getAllUsers,
          getUserById } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import { resetRouter } from '@/router'
 
 const state = {
     token: getToken(),
@@ -196,6 +197,7 @@ const actions = {
             commit('SET_USERNAME', '')
             commit('SET_MESSAGES', {})
             removeToken()
+            resetRouter()
             resolve()
         })
     },

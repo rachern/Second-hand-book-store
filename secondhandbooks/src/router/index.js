@@ -59,6 +59,13 @@ export const constantRoutes = [
         meta: {name: 'AskingWall',title: '征书墙'}
       }
     ]
+  },
+  {
+    // 404页面
+    path: '*',
+    name: '404',
+    component: () => import('../views/404.vue'),
+    meta: {title: '404'}
   }
 ]
 
