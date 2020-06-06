@@ -339,6 +339,12 @@ const actions = {
 
     // 储存用户消息
     messages({ commit }, messages) {
+        if(!messages.interactiveMessage) {
+            messages.interactiveMessage = {
+                read: {},
+                unread: {}
+            }
+        }
         commit('SET_MESSAGES', messages)
     },
 

@@ -163,18 +163,21 @@ export default {
         ])
     },
     watch: {
-        myCartList(value) {
-            if(value) {
-                this.cartList = value.cartList
-                const isAllCheck = this.cartList.every(element => {
-                    return element.checked === true
-                })
-                if(isAllCheck) {
-                    this.checkAll = true
-                } else {
-                    this.checkAll = false
+        myCartList: {
+            handler(value) {
+                if(value) {
+                    this.cartList = value.cartList
+                    const isAllCheck = this.cartList.every(element => {
+                        return element.checked === true
+                    })
+                    if(isAllCheck) {
+                        this.checkAll = true
+                    } else {
+                        this.checkAll = false
+                    }
                 }
-            }
+            },
+            immediate: true
         },
         cartList: {
             handler(newValue) {

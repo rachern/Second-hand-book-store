@@ -37,6 +37,7 @@ router.post('/register', async (req, res) => {
     if (!user || user.length === 0) {
         password = MD5(`${password}${PWD_SALT}`).toString()
         user = await createUser(username, password, phoneNumber)
+        console.log(user)
         if (!user || user.length === 0) {
             new Result('注册失败').fail(res)
         } else {

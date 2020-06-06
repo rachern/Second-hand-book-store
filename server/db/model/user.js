@@ -43,9 +43,7 @@ const userSchema = new mongoose.Schema({
         type:Array
     },
     cartList:[Object],//购物车
-    message: { // 消息
-        type: Object
-    }
+    message: Object
 })
 
 //将Schema对象转化为数据模型

@@ -371,6 +371,9 @@ export default {
             .myPublish,.myCollection,.myAuction{
                 margin-bottom: 15px;
             }
+            .el-card__body {
+                min-height: 146px;
+            }
             .nothing{
                 height: 104px;
                 line-height: 104px;

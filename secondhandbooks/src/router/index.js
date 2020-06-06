@@ -60,13 +60,13 @@ export const constantRoutes = [
       }
     ]
   },
-  {
-    // 404页面
-    path: '*',
-    name: '404',
-    component: () => import('../views/404.vue'),
-    meta: {title: '404'}
-  }
+  // {
+  //   // 404页面
+  //   path: '*',
+  //   name: '404',
+  //   component: () => import('../views/404.vue'),
+  //   meta: {title: '404'}
+  // }
 ]
 
 export const asyncRoutes = [

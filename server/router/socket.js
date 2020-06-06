@@ -135,6 +135,12 @@ module.exports = function(io) {
             const messages = await getMessages(username)
             const { message } = messages
             // console.log(message)
+            if(!message.interactiveMessage) {
+                message.interactiveMessage = {
+                    read: {},
+                    unread: {}
+                }
+            }
             if(!message.interactiveMessage.read[JSON.stringify(JSON.parse(toUser)._id)] && !message.interactiveMessage.unread[JSON.stringify(JSON.parse(toUser)._id)]) {
                 message.interactiveMessage.unread[JSON.stringify(JSON.parse(toUser)._id)] = []
                 const newMessage = await hasReadInteractiveMessage(username, message)
